@@ -1,0 +1,13 @@
+Submission Instructions
+
+Failure to follows these instructions will result in your assignment not being graded and you will receive a zero.
+
+A Makefile will be included with your submission. The Makefile will include an all phony target (which will be the first target) and a clean phony target that properly removes all compiler and linker generated files. The Makefile will be properly structured, specifically it will properly use dependencies. For example, repeatedly calling make all should not rebuild anything if no source files have changed. Makefiles will be discussed in the first lab discussion and more information on Makefiles can be found in this Makefile tutorial.
+
+A README will be included with your submission. The README will include which portions of the assignment you did and did not complete.
+
+The name of the output program must be identical to what is specified in the assignment.
+
+All submissions will be in the proper directory: a#. The a must be lowered cased and #, will be 1, 2, 3, ..., 9, 10, 11, 12, ... . Instructions for using gsubmit can be found here
+
+A script will be used to automatically grade some assignments. Failure to follow these instructions will result in the script failing. We will sometimes provide this script which will perform a subset of the tests we will perform for grading. It is highly recommended you use this script to test your submission. Passing the script tests does not guarantee a good grade for the assignment but failing the script does suggest something is wrong with your program.
