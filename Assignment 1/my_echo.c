@@ -2,18 +2,18 @@
 
 int main(int argc, char const * argv [])
 {
-	bool newline_at_end = true;
+	int newline_at_end = 1;
 	int counter = 1;
 
 	if (argc > 1)
 	{
 		if (*argv[1] == "-n")
 		{
-			newline_at_end = false;
-			counter = 2;
+			newline_at_end = 0;
+			counter++;
 		}
-
 	}
+
 	for (int i = counter; i < argc; ++i)
 	{
 		printf(*argv[i]);
