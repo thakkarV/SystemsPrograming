@@ -4,7 +4,7 @@
 int main(int argc, char const * argv [])
 {
 	int newline_at_end = 1;
-	int counter = 1;
+	int start = 1;
 	char * newline_flag = "-n";
 	char * space = " ";
 
@@ -13,13 +13,14 @@ int main(int argc, char const * argv [])
 		if (strcmp((argv[1]), newline_flag) == 0)
 		{
 			newline_at_end = 0;
-			counter++;
+			start++;
 		}
 
-		for (int i = counter; i < argc - 1; ++i)
+		while (start != argc - 1)
 		{
-			printf(argv[i]);
+			printf(argv[start]);
 			printf(space);
+			start++;
 		}
 
 		printf(argv[argc - 1]);
@@ -31,5 +32,4 @@ int main(int argc, char const * argv [])
 	}
 
 	return 0;
-
 }
