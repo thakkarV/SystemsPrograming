@@ -31,7 +31,9 @@ def build():
 def test(args):
 	my_echo_output = exec_prog(["./my_echo"] + args, False);
 	echo_output = exec_prog(["echo"] + args);
-
+	print("TEST")
+	print("my echo : " + my_echo_output)
+	print("true echo: " + echo_output)
 	return my_echo_output == echo_output
 
 def tests():
