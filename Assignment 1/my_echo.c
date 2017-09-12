@@ -15,16 +15,15 @@ int main(int argc, char const * argv [])
 			newline_at_end = 0;
 			counter++;
 		}
-	}
 
-	for (int i = counter ; i < argc - 1; ++i)
-	{
-		printf(argv[i]);
-		printf(space);
-		
-	}
+		for (int i = counter; i < argc - 1; ++i)
+		{
+			printf(argv[i]);
+			printf(space);
+		}
 
-	printf(argv[argc - 1]);
+		printf(argv[argc - 1]);
+	}
 
 	if (newline_at_end)
 	{
