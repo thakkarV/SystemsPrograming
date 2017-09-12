@@ -16,7 +16,7 @@ int main(int argc, char const * argv [])
 			start++;
 		}
 
-		while (start != argc - 1)
+		while (start < argc - 1)
 		{
 			printf(argv[start]);
 			printf(space);
