@@ -19,7 +19,7 @@ int main(int argc, char const * argv [])
 
 		while (argc > 1)
 		{
-			printf(argv++);
+			printf(*argv++);
 			argc--;
 
 			if (argc > 0)
