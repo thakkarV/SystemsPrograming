@@ -8,20 +8,22 @@ int main(int argc, char const * argv [])
 	char * newline_flag = "-n";
 	char * space = " ";
 
-	if (strcmp((argv[1]), newline_flag) == 0)
+	if (argc > 1)
 	{
-		newline_at_end = 0;
-		start++;
-	}
+		if (strcmp((argv[1]), newline_flag) == 0)
+		{
+			newline_at_end = 0;
+			start++;
+		}
 
-	while (start < argc - 1)
-	{
-		printf(argv[start]);
-		printf(space);
-		start++;
+		while (start < argc - 1)
+		{
+			printf(argv[start]);
+			printf(space);
+			start++;
+		}
+		printf(argv[argc - 1]);
 	}
-
-	printf(argv[argc - 1]);
 
 	if (newline_at_end)
 	{
