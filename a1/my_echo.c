@@ -14,10 +14,11 @@ int main(int argc, char const * argv [])
 		start++;
 	}
 
-	for (int i = start; i < argc - 1; ++i)
+	while (start < argc - 1)
 	{
-		printf(argv[i]);
+		printf(argv[start]);
 		printf(space);
+		start++;
 	}
 
 	printf(argv[argc - 1]);
