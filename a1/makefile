@@ -1,5 +1,7 @@
 CC = gcc
 
+.PHONY: all clean
+
 all: my_echo
 
 my_echo: my_echo.o
@@ -9,4 +11,4 @@ my_ehco.o: my_echo.c
 	$(CC) -c my_echo.c
 
 clean:
-	rm -rf my_echo my_echo.o
+	rm -f my_echo my_echo.o
