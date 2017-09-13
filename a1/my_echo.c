@@ -4,25 +4,29 @@
 int main(int argc, char const * argv [])
 {
 	int newline_at_end = 1;
-	int start = 1;
+	int counter = argc;
+	char * string = argv[0];
 	char * newline_flag = "-n";
 	char * space = " ";
 
 	if (argc > 1)
 	{
-		if (strcmp((argv[1]), newline_flag) == 0)
+		string++;
+		if (strcmp(string, newline_flag) == 0)
 		{
 			newline_at_end = 0;
-			start++;
+			string++;
+			counter--;
 		}
 
-		while (start < argc - 1)
+		while (counter > 1)
 		{
-			printf(argv[start]);
-			printf(space);
-			start++;
+			printf(string++);
+			counter--;
+
+			if (counter > 0)
+				printf(space);
 		}
-		printf(argv[argc - 1]);
 	}
 
 	if (newline_at_end)
