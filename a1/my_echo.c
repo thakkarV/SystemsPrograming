@@ -11,6 +11,7 @@ int main(int argc, char const * argv [])
 	if (argc > 1)
 	{
 		*argv++;
+		argc--;
 		if (strcmp(argv[0], newline_flag) == 0)
 		{
 			newline_at_end = 0;
@@ -18,16 +19,16 @@ int main(int argc, char const * argv [])
 			{
 				*argv++;
 				argc--;
-				boundry = 2;
 			}
 		}
 
-		while (argc > boundry)
+		while (argc > 0)
 		{
-			printf(*argv++);
+			printf(*argv);
+			argv++;
 			argc--;
 
-			if (argc > boundry)
+			if (argc > 0)
 				printf(space);
 		}
 	}
