@@ -13,16 +13,16 @@ int main(int argc, char const * argv [])
 		if (strcmp(argv, newline_flag) == 0)
 		{
 			newline_at_end = 0;
-			argv++;
+			*argv++;
 			argc--;
 		}
 
-		while (argc > 1)
+		while (argc > 2)
 		{
 			printf(*argv++);
 			argc--;
 
-			if (argc > 0)
+			if (argc > 2)
 				printf(space);
 		}
 	}
