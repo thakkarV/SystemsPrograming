@@ -19,17 +19,17 @@ int main(int argc, char const * argv [])
 			{
 				*argv++;
 				argc--;
+
+				while (argc > 0)
+				{
+					printf(*argv);
+					argv++;
+					argc--;
+
+					if (argc > 0)
+						printf(space);
+				}
 			}
-		}
-
-		while (argc > 0)
-		{
-			printf(*argv);
-			argv++;
-			argc--;
-
-			if (argc > 0)
-				printf(space);
 		}
 	}
 
