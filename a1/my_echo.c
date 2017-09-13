@@ -14,7 +14,7 @@ int main(int argc, char const * argv [])
 		start++;
 	}
 
-	for (int i = start; start < argc - 1; ++i)
+	for (int i = start; i < argc - 1; ++i)
 	{
 		printf(argv[i]);
 		printf(space);
