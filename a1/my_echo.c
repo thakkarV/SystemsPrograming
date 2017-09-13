@@ -10,13 +10,16 @@ int main(int argc, char const * argv [])
 
 	if (argc > 1)
 	{
-		argv++;
+		*argv++;
 		if (strcmp(argv, newline_flag) == 0)
 		{
 			newline_at_end = 0;
-			*argv++;
-			argc--;
-			boundry = 2;
+			if (argc > 2)
+			{
+				*argv++;
+				argc--;
+				boundry = 2;
+			}
 		}
 
 		while (argc > boundry)
