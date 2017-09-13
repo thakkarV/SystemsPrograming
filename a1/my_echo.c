@@ -16,7 +16,7 @@ int main(int argc, char const * argv [])
 		{
 			newline_at_end = 0;
 
-			if (argc > 2 && !newline_at_end)
+			if (argc > 1 && !newline_at_end)
 			{
 				*argv++;
 				argc--;
