@@ -11,7 +11,7 @@ int main(int argc, char const * argv [])
 	if (argc > 1)
 	{
 		*argv++;
-		if (strcmp(argv, newline_flag) == 0)
+		if (strcmp(*argv, newline_flag) == 0)
 		{
 			newline_at_end = 0;
 			if (argc > 2)
