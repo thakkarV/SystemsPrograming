@@ -6,6 +6,7 @@ int main(int argc, char const * argv [])
 	int newline_at_end = 1;
 	int start = 1;
 	char * newline_flag = "-n";
+	char * space = " ";
 
 	if (strcmp((argv[1]), newline_flag) == 0)
 	{
@@ -16,7 +17,7 @@ int main(int argc, char const * argv [])
 	for (int i = start; start < argc - 1; ++i)
 	{
 		printf(argv[i]);
-		printf(" ");
+		printf(space);
 	}
 
 	printf(argv[argc - 1]);
