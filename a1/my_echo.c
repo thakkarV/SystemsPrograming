@@ -5,7 +5,7 @@ int main(int argc, char const * argv [])
 {
 	int newline_at_end = 1;
 	int counter = argc;
-	char * string = argv;
+	char * string = *argv;
 	char * newline_flag = "-n";
 	char * space = " ";
 
