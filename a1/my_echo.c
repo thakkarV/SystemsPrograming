@@ -6,6 +6,7 @@ int main(int argc, char const * argv [])
 	int newline_at_end = 1;
 	char * newline_flag = "-n";
 	char * space = " ";
+	int boundry = 1;
 
 	if (argc > 1)
 	{
@@ -15,14 +16,15 @@ int main(int argc, char const * argv [])
 			newline_at_end = 0;
 			*argv++;
 			argc--;
+			boundry = 2;
 		}
 
-		while (argc > 2)
+		while (argc > boundry)
 		{
 			printf(*argv++);
 			argc--;
 
-			if (argc > 2)
+			if (argc > boundry)
 				printf(space);
 		}
 	}
