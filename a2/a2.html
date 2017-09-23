@@ -1,0 +1,235 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!-- saved from url=(0073)http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/assignments/a2/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; Linux 2.4.2-2 i686) [Netscape]">
+  <title>CS 410 - Assignment 2</title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+&nbsp;
+<table nosave="" border="0" width="95%">
+  <tbody>
+    <tr nosave="">
+      <td nosave="" style="font-weight: bold;" width="28%">CS 410</td>
+      <td style="font-weight: bold;" width="44%">
+      <center>Advanced Software Systems</center>
+      </td>
+      <td nosave="" width="28%">
+      <center><span style="font-weight: bold;">Instructor: Eric Missimer
+      </span><span style="font-weight: bold;"><br>
+      </span></center>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+      <center><u><font size="+3">Assignment 2</font></u></center>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<hr align="center"> <b>Note</b>: Please follow the assignment guidelines
+carefully and submit exactly the information that is required. Anyone who fails
+to submit files in the correct format (i.e., adhering to name conventions etc)
+will not be graded.  Make sure to read the submission instructions: <a href="http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/submission_instructions.html">Submission Instructions</a>.
+<h2><u>Purpose</u></h2>
+In this assignment you will become more familiar with the basic tools
+required of any good C and/or systems programmer. The bulk of the
+assignment involves file input and output. All material required to
+correctly program the assignment can be found in the Stevens text,
+except where noted.
+<h2> <u>Problem: A String Searching Program</u></h2>
+You are required to write a program called "finds<font face="Courier New, Courier, mono">"</font> that will traverse a
+directory hierarchy, searching for files that contain a specific
+string,
+which we will call "<b>s</b>"<b> </b>(hence the name "finds" for "<b>find
+s</b>tring"). Once a file is identified that contains "<b>s</b>", you
+should print the filename to the standard output along with the line in
+the file containing the string.
+<p>In essence, you are going to write a program that does something
+like the following: </p>
+<p>find -type f <i>pathname</i> -name '*' -exec grep '<b>s</b>' {} \;
+-print </p>
+<p>which is a command string you can type in a shell, to search
+from <i>pathname
+</i>for
+all files (denoted by the wildcard '*') that contain the string "<b>s</b>".
+Once a matching file is found, the line(s) in the file containing "<b>s</b>"
+are printed, followed by the name of the file. <br>
+&nbsp; </p>
+<h2> <u>The "finds" Program and its Command-Line Arguments</u></h2>
+You will write the program "finds" to take several command-line
+arguments as follows:
+<p>finds -p <i>pathname</i> [-f c|h|S] [-l] -s <b>s</b> </p>
+<p>The -p, -f, and -s flags are there for convenience (believe it or
+not!) to help with parsing the command-line, especially if you choose
+to
+use getopt() or one of its variants (see "<font face="Courier New, Courier, mono">man -s 3c getopt"</font> on Solaris,
+or "<font face="Courier New, Courier, mono">man 3c getopt"</font> on
+Linux, for more details<font face="Courier New, Courier, mono">).</font>
+</p>
+<p>The <i>pathname </i>is a
+string identifying some location in the directory hierarchy e.g., /,
+/home/joe, ., or .. <br>
+The -f flag is optional but
+must be followed by either "c", "h" or "S" to identify the file
+suffixes
+for the files that we wish to search. For example, "-f c" means search
+for all files with a .c ending, while "-f h" means search for all files
+with a .h ending. If the -f option is not used, it is assumed that you
+wish to search through all <i>regular files</i> from the <i>pathname</i>
+for those files containing "<b>s</b>". </p>
+
+<p>
+  The -l option, when specified, means to traverse symbolic links.
+  This is similar to -L in the find program.  If -l is not specified
+  symbol links should not be traversed.
+</p>
+
+<p>The final argument accepted by
+"finds" is specified by the -s flag and is followed by the
+search string "<b>s</b>". </p>
+<p>NOTE: You are allowed to use
+getopt() or one of its variants, as mentioned above, to parse
+command-line arguments. For further details you can look at the
+following URL: </p>
+
+<p>
+  <a href="http://www.gnu.org/software/libc/manual/html_node/Getopt.html#Getopt">
+http://www.gnu.org/software/libc/manual/html_node/Getopt.html#Getopt</a>
+</p>
+  <h2> <u>Traversing a
+Directory Tree</u></h2>
+Starting with the directory
+that was specified by <i>pathname</i> in the command line, your
+program
+should inspect all subsequent directory entries. For each <i>regular
+file</i>, you need to open it and search for the presence of "<b>s</b>".<br>
+If "<b>s</b>" is found, you must print the line in the file containing
+the string to the standard output, followed by the <i>full</i> name of
+the file (i.e., the entire pathname for the file).
+  <p>Helpful routines to
+traverse a directory tree can be found in Program 4.7 in Stevens book. </p>
+  <p>NOTE: You are NOT allowed
+to use the system() command or any routines such as ftw(). You must
+write your own routines that may be based upon code in the book. Most
+information you will need for this assignment is covered in the first 4
+chapters. </p>
+  <h2> <u>Inspecting Regular
+Files</u></h2>
+You need to identify each
+file ending in either .c, .h, .S (or <i>any</i> ending if the -f flag
+is
+not used). For each matching regular file (and symbolic link if -l is
+used), you must search for "<b>s</b>", until you reach the end of the
+file, and then you should move on to searching other files.
+
+<h3> <u>Output</u></h3>
+
+<p>
+  All output should be written to the standard output
+  device. Appropriate error messages should appear on standard error
+  where appropriate (invalid fd or read-only file descriptor, for
+  example), but the functions should continue execution when any
+  errors are non-fatal.
+</p>
+
+<p>
+  You are strongly encouraged to use the standard I/O library
+  functions, and their associated file streams. You will discover they
+  are much easier to use than system calls that directly manipulate
+  file descriptors.
+</p>
+
+
+<h2> <u>Extra Credit: Using "finds" to Search for Wildcards</u></h2>
+
+Once you have completed the first part, you should try to extend
+"finds" to be more powerful. In this part of the assignment, you will
+need to modify how you specify and search for the string "<b>s</b>" in
+your regular files. We will discuss regular expressions briefly in
+class.  More information can be found at <a href="http://www.regular-expressions.info/tutorial.html">
+http://www.regular-expressions.info/tutorial.html</a>.  You will only
+support a limited subset of regular expressions, specifically, you can
+assume that "<b>s</b>" can take the following form:
+
+<ul>
+  <li> any number of alphanumerical characters in any order</li>
+
+  <li> any number of alphanumerical characters in any order,
+interspersed with <i>control</i> characters; the following control
+characters have special meaning:</li>
+  <ul>
+    <li> '.' matches any single alphanumerical character in a given
+sequence e.g., "a.b" matches "abb", "a9b" etc</li>
+    <li> '*' matches zero or more instances of the previous character
+e.g., "a*b" matches "b", "ab", "aab" etc</li>
+    <li> '?' matches zero or one instance of the previous character
+e.g., "a?b" matches "ab" or "b".</li>
+    <li>Parentheses for grouping substrings: '(' and ')'. For example,
+a regular expression of the form "a(bc)*" matches "a", "abc", "abcbc"
+etc.</li>
+  </ul>
+  <li> NOTE: all other characters are invalid. If "<b>s</b>" is
+specified incorrectly, an error message should be reported by "finds"
+when the command-line is parsed, and the program should be
+terminated.</li>
+  <li>For simplicity, you can assume that valid regular expressions
+have <span style="font-weight: bold;">at most</span> one of each of
+the control characters '.', '*', and '?'. <br>
+  </li>
+</ul>
+
+You should extend the functionality of "finds" to support the control
+characters listed above.  Any use of existing regular expressions
+libraries will result zero extra credit.
+
+<h2> <u>Testing</u></h2>
+
+<p>
+  The binary that will run a combination of find+grep can be found
+  here: <a href="http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/assignments/a2/finds_runner"> finds_runner</a>.  This program expects one
+  command line argument, a file containing the test cases to run.  Make sure
+  that finds_runner is marked as executable so you can run it.  This file along
+  with the directories to run can be found
+  here: <a href="http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/assignments/a2/cs410_finds_test_cases.tar.gz">
+  cs410_finds_test_cases.tar.gz</a>.  Basically running the following commands
+  on csa2/cs410 will run the test cases.
+
+  </p><ul>
+    <li>tar xf cs410_finds_test_cases.tar.gz</li>
+    <li>cp finds_runner cs410_finds_test_cases/</li>
+    <li>cp <i>your-finds-program</i> cs410_finds_test_cases/</li>
+    <li>cd cs410_finds_test_cases</li>
+    <li>./finds_runner test_cases_script</li>
+  </ul>
+<p></p>
+
+<h2> <u>Submission</u></h2>
+
+<p>Work is to be submitted using gsubmit (in a folder
+called <b>a2</b>). Please submit only the .h and .c files (you may
+only need a main.c) in a directory called <font face="Courier New,
+Courier, mono">a2</font>. Also, submit a Makefile which compiles and
+links your sources into an executable called "finds".  Do not include
+any other test files. Your code will be tested on csa2/cs410.
+Programs that correctly compile/run on other platforms will not
+receive credit if they don't work on csa2/cs410. If necessary, you may
+submit a README file to explain the extent to which your program works
+and how it should be compiled.</p>
+
+<p>You should only submit ONE final version of this assignment, that
+supports the searching of strings with wildcards. </p>
+
+
+<h2> <u>Academic Conduct Reminder</u></h2>
+
+Submitting part or all of another person's assignment (or leveraging
+another person's work to produce your own submission) is an act of
+plagiarism. Submissions will be checked for originality by hand and by
+a program checker -- please do not jeopardize your academic standing
+by taking chances in completing this assignment. Please see the TF or
+instructor if you have any questions about where we (and the college)
+draw the line regarding acceptable levels of collaboration.
+
+
+</body></html>
