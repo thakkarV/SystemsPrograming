@@ -113,6 +113,7 @@ static int file_tree_walk(const char * root, parse_file * parser)
 
 }
 
+// function that recursively calls itself for each dir, and calls parser for each file or folder
 static int dopath(parse_file * parser)
 {
 
