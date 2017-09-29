@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h> // for cmd args
 #include <stdbool.h> // bool support
+#include <stdio.h> // FILE 
+#include <dirent.h> // DIR
 
 #define NORMAL_COLOR  "\x1B[0m"
 #define GREEN  "\x1B[32m"
@@ -13,7 +15,7 @@
 static int travers(const char * root, const char * match_string);
 
 // declare global vars for cmd args
-static const char * flags = "p:f::l::s:";
+static const char const * flags = "p:f::l::s:";
 static bool pflag = false; // path flag
 static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file only
 static bool sflag = false; // parse match string
@@ -21,7 +23,8 @@ static bool lflag = false; // parses symbolic links too if set
 
 static char * pvalue = NULL; // path to the root of the parse tree
 static char * fvalue = NULL; // stores the value for the -f flag as a string
-static char * svalue = NULL; // the value of the s flag is the s string we mathc for in the parse tree
+static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
+static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
 // declare global vars for walker
 static long num_regular = 0;
@@ -29,7 +32,7 @@ static long num_dirs = 0;
 static long num_symlinks = 0;
 static long num_total = 0;
 
-static parse_file parser;
+// static parse_file parser;
 
 // define files types as const ints
 static const int FTW_FILE = 1; // readable file
@@ -37,13 +40,14 @@ static const int FTW_DIR = 2; // openable dir
 static const int FTW_NO_DIR = 3; // dir with no read permission
 static const int FTW_NO_STAT = 4; // file that we cannot stat
 
-static char * abs_path; // the path to the file/dir currently being parsed
-static size_t path_len;// size of abs_path in bytes
+static char * abs_path = NULL; // the path to the file/dir currently being parsed
+static size_t plength = 0;// size of abs_path in bytes
+static size_t slength = 0;
 
 int main(int argc, char * argv [])
 {
-	int ret_val = 0;
-
+	char cmd;
+	
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
 	{
@@ -54,6 +58,7 @@ int main(int argc, char * argv [])
 			{
 				pflag = true;
 				pvalue = optarg;
+				plength = strlen(optarg);
 				break;
 			}
 			case 'f':
@@ -70,19 +75,13 @@ int main(int argc, char * argv [])
 			case 's':
 			{
 				sflag = true;
-				mathc_string = optarg;
+				svalue = optarg;
+				slength = strlen(svalue);
 				break;
 			}
 			case '?':
 			{
-				if (isprint(optopt))
-				{
-					fprintf(stderr, "Unknown option '-%c'.\n", optopt);
-				}
-				else
-				{
-					fprintf(stderr, "Unknown option charecter '\\x%x'.\n", optopt);
-				}
+				printf("Unknown option '-%c'.\n", optopt);
 				return 1;
 			}
 			default :
@@ -92,10 +91,42 @@ int main(int argc, char * argv [])
 		}
 	}
 
-	// ret_val = file_tree_walk(pvalue, parser);
+	// first make sure we got both the path and the match string
+	if (!pflag || !plength)
+	{
+		printf("%s: Path not specified.\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	if (!sflag || !slength)
+	{
+		printf("%s: Match string not specified.\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+
+	// check for illegal chars in the match string
+
+	char * c =  NULL;
+	if (c = strpbrk(svalue, invalid_chars))
+	{
+		printf("%s: Invalid charecter(s) %c found in match string.\n", argv[0], c);
+		exit(EXIT_FAILURE);
+	}
+
+	// now check if fflag is true, then the vlaue of the flag is valid
+	if (fflag)
+	{
+		if (*fvalue != 'c' || *fvalue != 'h' || *fvalue != 'S')
+		{
+			printf("%s: Invalid input arg %c for -f flag.", argv[0], fvalue);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	// ret_val = file_tree_walk(pvalue, 	parser);
 
 	printf("Path suppied is %s\n", pvalue);
-	printf("Stirng to match is %s\n", svalue);
+	printf("String to match is %s\n", svalue);
 	num_total = num_symlinks + num_regular + num_dirs;
 
 	printf("Number of regualr files = %d", num_regular);
@@ -103,7 +134,7 @@ int main(int argc, char * argv [])
 	printf("Number of directories = %d", num_dirs);
 	printf("Total number of files = %d", num_total);
 
- 	exit(ret_val);
+ 	exit(EXIT_SUCCESS);
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
@@ -151,3 +182,21 @@ int main(int argc, char * argv [])
 // 		}
 // 	}
 // }
+
+int parse_regualr(const char * path, const char * match_string)
+{
+	FILE * fptr;
+	fptr = fopen(path, "r");
+
+	char * line_buffer = malloc(sizeof(char) * 512);
+
+	while(!feof(fptr))
+	{
+		fgets(line_buffer, 256, fptr);
+		printf("%s\n", line_buffer);
+	}
+
+	free(line_buffer);
+	fclose(fptr);
+	return 0;
+}
