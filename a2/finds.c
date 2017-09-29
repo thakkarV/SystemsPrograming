@@ -111,11 +111,17 @@ int main(int argc, char * argv [])
 	{
 		printf("%s: Invalid charecter(s) %c found in match string.\n", argv[0], c);
 		exit(EXIT_FAILURE);
-	}
+	}	
 
 	// now check if fflag is true, then the vlaue of the flag is valid
 	if (fflag)
 	{
+		if (!fvalue)
+		{
+			printf("No value for -f specified.\n");
+			exit(EXIT_FAILURE);
+		}
+
 		if (*fvalue != 'c' || *fvalue != 'h' || *fvalue != 'S')
 		{
 			printf("%s: Invalid input arg %c for -f flag.", argv[0], fvalue);
@@ -129,19 +135,42 @@ int main(int argc, char * argv [])
 	printf("String to match is %s\n", svalue);
 	num_total = num_symlinks + num_regular + num_dirs;
 
-	printf("Number of regualr files = %d", num_regular);
-	printf("Number of symlinks = %d", num_symlinks);
-	printf("Number of directories = %d", num_dirs);
-	printf("Total number of files = %d", num_total);
+	printf("Number of regualr files = %d\n", num_regular);
+	printf("Number of symlinks = %d\n", num_symlinks);
+	printf("Number of directories = %d\n", num_dirs);
+	printf("Total number of files = %d\n", num_total);
 
  	exit(EXIT_SUCCESS);
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
-// static int traverse(const char * path, const char * match_string)
-// {
+int traverse(char * path)
+{
+	struct stat statbuf;
 
-// }
+	if (-1 == stat(path, &statbuf))
+	{
+		printf("Permission Denied: Cout not open path %s for reading", path);
+		return 1;
+	}
+	
+	switch(statbuf.st_mode & S_IFMT)
+	{
+		case (S_IFREG):
+		{
+			break;
+		}
+		case (S_IFDIR):
+		{
+			break;
+		}
+		case (S_ISLNK):
+		{
+			break;
+		}
+	}
+		
+}
 
 // // main parser subroutine that parses through all difference types of files and calls the appropriate parse funtion
 // static int parse(const char * path, const struct stat * statbuf, int type)
