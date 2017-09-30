@@ -187,6 +187,10 @@ int traverse(const char * const path, size_t pathlen)
 				struct dirent * dir_entry; 
 				while ((dir_entry = readdir(directory)) != NULL) 
 				{
+					// if the dir entry is a symbolic link to self or parent, skip it
+					if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0)
+						continue;
+
 					// for all the contents of the file, construct the pathname to be passed to the parse function
 					// we get the new path length as
 					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 2;
