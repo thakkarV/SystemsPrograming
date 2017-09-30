@@ -21,9 +21,10 @@ static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file
 static bool sflag = false; // parse match string
 static bool lflag = false; // parses symbolic links too if set
 
-static char * pvalue = NULL; // path to the root of the parse tree
-static char * fvalue = NULL; // stores the value for the -f flag as a string
-static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
+static char * const pvalue = NULL; // path to the root of the parse tree
+static size_t plength = 0;// size of abs_path in bytes
+static char * const fvalue = NULL; // stores the value for the -f flag as a string
+static char * const svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
 static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
 // declare global vars for walker
@@ -40,8 +41,8 @@ static const int FTW_DIR = 2; // openable dir
 static const int FTW_NO_DIR = 3; // dir with no read permission
 static const int FTW_NO_STAT = 4; // file that we cannot stat
 
-static char * abs_path = NULL; // the path to the file/dir currently being parsed
-static size_t plength = 0;// size of abs_path in bytes
+static char * const abs_path = NULL; // the path to the file/dir currently being parsed
+static size_t abs_plength = 0;
 static size_t slength = 0;
 
 int main(int argc, char * argv [])
@@ -129,7 +130,10 @@ int main(int argc, char * argv [])
 		}
 	}
 
-	// ret_val = file_tree_walk(pvalue, 	parser);
+	// out starting dir is the path specified, so we set it to that
+	abs_path = malloc(strlen(pvalue));
+	strcpy(abs_path, pvalue);
+	// ret_val = traverse(pvalue, plength);
 
 	printf("Path suppied is %s\n", pvalue);
 	printf("String to match is %s\n", svalue);
@@ -144,13 +148,13 @@ int main(int argc, char * argv [])
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
-int traverse(char * path)
+int traverse(const char * const path, size_t pathlen)
 {
 	struct stat statbuf;
 
 	if (-1 == stat(path, &statbuf))
 	{
-		printf("Permission Denied: Cout not open path %s for reading", path);
+		printf("Permission Denied: Could not open path %s for reading", path);
 		return 1;
 	}
 	
@@ -158,18 +162,60 @@ int traverse(char * path)
 	{
 		case (S_IFREG):
 		{
+			if (fflag)
+			{
+
+			}
+			// regular file
+			printf("Reading file: %s\n", path);
 			break;
 		}
 		case (S_IFDIR):
 		{
+			// directory
+			DIR * directory = opendir(path);
+
+			if (directory == NULL)
+			{
+				printf("Could not open directroy at %s for reading. \n", path);
+				return 1;
+			}
+			else
+			{
+				struct dirent * dir_entry; 
+				while ((dir_entry = readdir(directory)) != NULL) 
+				{
+					// for all the contents of the file, construct the pathname to be passed to the parse function
+					// we get the new path length as
+					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 2;
+					char * dirent_path = malloc(dirent_pathlen);
+					dirent_path[0] = '\0';
+					strcat(dirent_path, path);
+
+					if (dirent_path[pathlen - 1] != "/");
+						dirent_path[pathlen] = "/";
+
+					strcat(dirent_path, dir_entry-> d_name);
+
+					// now recursively call traverse on all directory contents
+					int retval = traverse(dirent_path, dirent_pathlen);
+
+					free(dirent_path);
+				}
+			}
 			break;
 		}
 		case (S_ISLNK):
 		{
+			// only parse symlinks if sflag is true
+			if (sflag)
+			{
+				// lstat(path);
+			}
+			// symbloic link
 			break;
 		}
 	}
-		
 }
 
 // // main parser subroutine that parses through all difference types of files and calls the appropriate parse funtion
@@ -216,6 +262,13 @@ int parse_regualr(const char * path, const char * match_string)
 {
 	FILE * fptr;
 	fptr = fopen(path, "r");
+
+	// check
+	if (fptr == NULL)
+	{
+		printf("Could not open file for reading.");
+		return 1;
+	}
 
 	char * line_buffer = malloc(sizeof(char) * 512);
 
