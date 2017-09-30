@@ -193,8 +193,8 @@ int traverse(const char * const path, size_t pathlen)
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 
-					if (dirent_path[pathlen - 1] != "/");
-						dirent_path[pathlen] = "/";
+					if (dirent_path[pathlen - 1] != (char)"/");
+						dirent_path[pathlen] = (char)"/";
 
 					strcat(dirent_path, dir_entry-> d_name);
 
@@ -208,7 +208,7 @@ int traverse(const char * const path, size_t pathlen)
 			}
 			break;
 		}
-		case (S_ISLNK):
+		case (S_IFLNK):
 		{
 			// only parse symlinks if sflag is true
 			if (sflag)
