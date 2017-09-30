@@ -9,6 +9,7 @@
 #include <sys/stat.h> // stat, lstat
 
 #define NORMAL_COLOR  "\x1B[0m"
+#define RED     "\x1B[31m"
 #define GREEN  "\x1B[32m"
 #define BLUE  "\x1B[34m"
 
@@ -163,12 +164,14 @@ int traverse(const char * const path, size_t pathlen)
 	{
 		case (S_IFREG):
 		{
+			// TODO: parse files with specific extensions only
 			if (fflag)
 			{
 
 			}
 			// regular file
 			printf("Reading file: %s\n", path);
+			parse_regular(path, svalue);
 			num_regular++;
 			break;
 		}
@@ -215,6 +218,7 @@ int traverse(const char * const path, size_t pathlen)
 		}
 		case (S_IFLNK):
 		{
+			// TODO: keep memory of nodes visited and do not visit again for symlinks
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
@@ -227,64 +231,36 @@ int traverse(const char * const path, size_t pathlen)
 	}
 }
 
-// // main parser subroutine that parses through all difference types of files and calls the appropriate parse funtion
-// static int parse(const char * path, const struct stat * statbuf, int type)
-// {
-// 	switch (type)
-// 	{
-// 		case FTW_FILE:
-// 		{
-// 			switch(statbuf->st_mode & S_IFMT) // bitwise and so we get the file type as the switch param
-// 			{
-// 				case S_IFREG:
-// 				{
-// 					parse_regualr(path, match_string);
-// 					num_regular++;
-// 					break;
-// 				}
-// 				case S_IFLNK:
-// 				{
-// 					parser_symlink(path, match_string);
-// 					num_symlinks++;
-// 					break;
-// 				}
-// 				default :
-// 				{
-// 					printf("Unsupported file format");
-// 				}
-// 			}
-// 		}
-// 		case FTW_DIR:
-// 		{
-// 			num_dirs++;
-// 			break;
-// 		}
-// 		case FTW_NO_STAT:
-// 		{
-// 			return 1;
-// 			break;
-// 		}
-// 	}
-// }
 
-int parse_regualr(const char * path, const char * match_string)
+int parse_regular(const char * path, const char * match_string)
 {
 	FILE * fptr;
 	fptr = fopen(path, "r");
-
+	int matchstr_len = strlen(match_string);
+	// TODO: make this able to read arbitrary length lines
+	int bufsize = 512;
 	// check
 	if (fptr == NULL)
 	{
-		printf("Could not open file for reading.");
+		printf("Could not open file for reading.\n");
 		return 1;
 	}
 
-	char * line_buffer = malloc(sizeof(char) * 512);
-
+	char * line_buffer = malloc(sizeof(char) * bufsize);
+	char * start_of_match = NULL;
 	while(!feof(fptr))
 	{
-		fgets(line_buffer, 256, fptr);
-		printf("%s\n", line_buffer);
+		fgets(line_buffer, bufsize, fptr);
+		
+		if ((start_of_match = strstr(line_buffer, match_string)) != NULL)
+		{
+			// first we get the length of the first segment of the array
+			size_t seg_1 = start_of_match - line_buffer;
+			printf("%.*s", seg_1, line_buffer);
+			printf("%s%.*s%s", RED, matchstr_len, start_of_match, NORMAL_COLOR);
+			start_of_match += matchstr_len;
+			printf("%s\n", start_of_match);
+		}
 	}
 
 	free(line_buffer);
