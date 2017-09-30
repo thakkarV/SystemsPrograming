@@ -113,7 +113,7 @@ int main(int argc, char * argv [])
 	{
 		printf("%s: Invalid charecter(s) %c found in match string.\n", argv[0], c);
 		exit(EXIT_FAILURE);
-	}	
+	}
 
 	// now check if fflag is true, then the vlaue of the flag is valid
 	if (fflag)
@@ -169,6 +169,7 @@ int traverse(const char * const path, size_t pathlen)
 			}
 			// regular file
 			printf("Reading file: %s\n", path);
+			num_regular++;
 			break;
 		}
 		case (S_IFDIR):
@@ -203,8 +204,8 @@ int traverse(const char * const path, size_t pathlen)
 
 					free(dirent_path);
 				}
-
 				closedir(directory);
+				num_dirs++;
 			}
 			break;
 		}
@@ -216,6 +217,7 @@ int traverse(const char * const path, size_t pathlen)
 				// lstat(path);
 			}
 			// symbloic link
+			num_symlinks++;
 			break;
 		}
 	}
