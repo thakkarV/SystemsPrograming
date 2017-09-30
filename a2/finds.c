@@ -134,7 +134,7 @@ int main(int argc, char * argv [])
 	// out starting dir is the path specified, so we set it to that
 	abs_path = malloc(strlen(pvalue));
 	strcpy(abs_path, pvalue);
-	// ret_val = traverse(pvalue, plength);
+	ret_val = traverse(pvalue, plength);
 
 	printf("Path suppied is %s\n", pvalue);
 	printf("String to match is %s\n", svalue);
