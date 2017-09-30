@@ -1,11 +1,12 @@
 // A2 : Make a find clone . for extra credit, support regex matching
 
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h> // for cmd args
+#include <stdlib.h> // printf
+#include <string.h> // strcmp, strpbrk, strcpy, strcat
+#include <unistd.h> // getopt, optopt, optarg
 #include <stdbool.h> // bool support
 #include <stdio.h> // FILE 
 #include <dirent.h> // DIR
+#include <sys/stat.h> // stat, lstat
 
 #define NORMAL_COLOR  "\x1B[0m"
 #define GREEN  "\x1B[32m"
@@ -21,10 +22,10 @@ static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file
 static bool sflag = false; // parse match string
 static bool lflag = false; // parses symbolic links too if set
 
-static char * const pvalue = NULL; // path to the root of the parse tree
+static char * pvalue = NULL; // path to the root of the parse tree
 static size_t plength = 0;// size of abs_path in bytes
-static char * const fvalue = NULL; // stores the value for the -f flag as a string
-static char * const svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
+static char * fvalue = NULL; // stores the value for the -f flag as a string
+static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
 static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
 // declare global vars for walker
@@ -41,7 +42,7 @@ static const int FTW_DIR = 2; // openable dir
 static const int FTW_NO_DIR = 3; // dir with no read permission
 static const int FTW_NO_STAT = 4; // file that we cannot stat
 
-static char * const abs_path = NULL; // the path to the file/dir currently being parsed
+static char * abs_path = NULL; // the path to the file/dir currently being parsed
 static size_t abs_plength = 0;
 static size_t slength = 0;
 
@@ -202,6 +203,8 @@ int traverse(const char * const path, size_t pathlen)
 
 					free(dirent_path);
 				}
+
+				closedir(directory);
 			}
 			break;
 		}
