@@ -134,7 +134,7 @@ int main(int argc, char * argv [])
 	// out starting dir is the path specified, so we set it to that
 	abs_path = malloc(strlen(pvalue));
 	strcpy(abs_path, pvalue);
-	ret_val = traverse(pvalue, plength);
+	int ret_val = traverse(pvalue, plength);
 
 	printf("Path suppied is %s\n", pvalue);
 	printf("String to match is %s\n", svalue);
@@ -194,8 +194,8 @@ int traverse(const char * const path, size_t pathlen)
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 
-					if (dirent_path[pathlen - 1] != (char)"/");
-						dirent_path[pathlen] = (char)"/";
+					if (dirent_path[pathlen - 1] != "/");
+						dirent_path[pathlen] = "/";
 
 					strcat(dirent_path, dir_entry-> d_name);
 
