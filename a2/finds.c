@@ -194,8 +194,8 @@ int traverse(const char * const path, size_t pathlen)
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 
-					if (dirent_path[pathlen - 1] != "/");
-						dirent_path[pathlen] = "/";
+					if (dirent_path[pathlen - 1] != '/');
+						dirent_path[pathlen] = '/';
 
 					strcat(dirent_path, dir_entry-> d_name);
 
