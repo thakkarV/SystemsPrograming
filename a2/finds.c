@@ -153,9 +153,9 @@ int traverse(const char * const path, size_t pathlen)
 {
 	struct stat statbuf;
 
-	if (-1 == stat(path, &statbuf))
+	if (stat(path, &statbuf) == -1)
 	{
-		printf("Permission Denied: Could not open path %s for reading", path);
+		printf("Permission Denied: Could not open path %s for reading.\n", path);
 		return 1;
 	}
 	
