@@ -167,7 +167,7 @@ int traverse(const char * const path, size_t pathlen)
 			if (fflag)
 			{
 				//
-				if (path[pathlen - 2] == '.' && path[pathlen - 1] == *fvalue)
+				if (path[pathlen - 3] == '.' && path[pathlen - 2] == *fvalue)
 				{
 					parse_regular(path, svalue);
 				}
