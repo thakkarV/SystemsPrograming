@@ -127,7 +127,7 @@ int main(int argc, char * argv [])
 
 		if ((*fvalue) != 'c' || (*fvalue) != 'h' || (*fvalue) != 'S')
 		{
-			printf("%s: Invalid input arg %c for -f flag.", argv[0], fvalue);
+			printf("Invalid input arg %c for -f flag.", fvalue);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -201,7 +201,7 @@ int traverse(const char * const path, size_t pathlen)
 			else
 			{
 				struct dirent * dir_entry;
-				printf("%s: Is a directory\n", );
+				printf("%s: Is a directory\n", path);
 				while ((dir_entry = readdir(directory)) != NULL) 
 				{
 					// if the dir entry is a symbolic link to self or parent, skip it
