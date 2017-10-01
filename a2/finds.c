@@ -9,7 +9,7 @@
 #include <sys/stat.h> // stat, lstat
 
 static const int max_path_length = 4096;
-static const int max_links = 512;
+static const int max_links = 1024;
 
 // color table for printing
 #define NORMAL_COLOR  "\x1B[0m"
@@ -24,7 +24,7 @@ int travers(const char * root, const char * match_string, char ** seen_links);
 int parse_regular(const char * path, const char * match_string);
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
-bool check_seen_links(const char * path, size_t pathlen, char ** seen_links);
+bool check_seen_links(ino_t inode, ino_t * seen_links)
 
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
@@ -46,7 +46,7 @@ static size_t len_seen_links = 0;
 int main(int argc, char * argv [])
 {
 	char cmd;
-	char ** seen_links = malloc(max_links * sizeof(char *));
+	ino_t * seen_links = malloc(max_links * sizeof(ino_t));
 
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
@@ -198,7 +198,7 @@ int traverse(const char * const path, size_t pathlen, char ** seen_links)
 			// if we have seen this before, skip it
 			if (lflag)
 			{
-				if (check_seen_links(path, pathlen, seen_links))
+				if (check_seen_links(statbuf.st_ino, seen_links))
 					return 0;
 			}	
 
@@ -244,7 +244,7 @@ int traverse(const char * const path, size_t pathlen, char ** seen_links)
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
-				if (check_seen_links(path, pathlen, seen_links))
+				if (check_seen_links(statbuf.st_ino, seen_links))
 					return 0;
 
 				int path_size;
@@ -317,29 +317,26 @@ int parse_regular(const char * path, const char * match_string)
 	return 0;
 }
 
-bool check_seen_links(const char * path, size_t pathlen, char ** seen_links)
+bool check_seen_links(ino_t inode, ino_t * seen_links)
 {
-
-	// first make a copy of the path to the link
-	char * copy_of_path = malloc(pathlen);
-
-	copy_of_path = strcpy(copy_of_path, path);
-
 	// head not seen, add to head nodes list
-	int i;
-	for (i = 0; i < len_seen_links; i++)
+	int * i = seen_links;
+	int couter = 0;
+
+	while (couter < len_seen_links)
 	{
-		if (strcmp(seen_links[i], copy_of_path) == 0)
-		{
-			free(copy_of_path);
+		if (*seen_links == inode)
 			return true;
-		}
+		counter++;
+		i++;
 	}
+
+	
 
 	// the link is new, add it to the list
 	if (len_seen_links < max_links)
 	{
-		seen_links[len_seen_links] = copy_of_path;
+		seen_links[len_seen_links] = inode;
 		len_seen_links++;
 		return false;
 	}
