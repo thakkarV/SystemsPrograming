@@ -23,7 +23,7 @@ int travers(const char * root, const char * match_string);
 int parse_regular(const char * path, const char * match_string);
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
-bool check_head_nodes(const char * path, size_t pathlen);
+bool check_seen_links(const char * path, size_t pathlen);
 
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
@@ -40,13 +40,13 @@ static size_t slength = 0;
 static const char const * invalid_chars = "%&#@!"; // chars that are illegal in the input mathc string
 
 // add an array of pointers to head nodes already seen for symlink traversal
-static char ** head_nodes = NULL;
-static size_t len_head_nodes = 0;
+static char ** seen_links = NULL;
+static size_t len_seen_links = 0;
 
 int main(int argc, char * argv [])
 {
 	char cmd;
-	char ** head_nodes = malloc(sizeof(char * ) * 1);
+	char ** seen_links = malloc(sizeof(char * ) * 1);
 
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
@@ -131,12 +131,12 @@ int main(int argc, char * argv [])
 	int ret_val = traverse(pvalue, plength);
 
 	// if we were traversing symlinks, free all the head nodes now
-	if (head_nodes != NULL)
+	if (seen_links != NULL)
 	{
 		int i;
-		for (i = 0; i < len_head_nodes; i++)
+		for (i = 0; i < len_seen_links; i++)
 		{
-			free(head_nodes[i]);
+			free(seen_links[i]);
 		}
 	}
 
@@ -196,12 +196,7 @@ int traverse(const char * const path, size_t pathlen)
 			// directory
 			// add this directory to the head nodes list if we have never seen this head node before
 			// if we have seen this before, skip it
-			if (lflag)
-			{
-				if (check_head_nodes(path, pathlen))
-					return 0;
-			}
-			
+
 			DIR * directory = opendir(path);
 			if (directory == NULL)
 			{
@@ -244,6 +239,9 @@ int traverse(const char * const path, size_t pathlen)
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
+				if (check_seen_links(path))
+					return 0;
+
 				int path_size;
 
 				if (statbuf.st_size == 0)
@@ -259,7 +257,6 @@ int traverse(const char * const path, size_t pathlen)
 
 				free(lnkpath);
 			}
-			
 		} break;
 	}
 }
@@ -315,27 +312,29 @@ int parse_regular(const char * path, const char * match_string)
 	return 0;
 }
 
-bool check_head_nodes(const char * path, size_t pathlen)
+bool check_seen_links(const char * path, size_t pathlen)
 {
-	// first extract head node from path
-	int len_node_name = strcspn(path, "/");
-	char * node_name = malloc(len_node_name);
-	node_name = memcpy(node_name, path, len_node_name);
 
+	// first make a copy of the path to the link
+	char * copy_of_path = malloc(strlen(path));
+
+	copy_of_path = strcpy(copy_of_path, path);
+
+	// head not seen, add to head nodes list
 	int i;
-	for (i = 0; i < len_head_nodes; i++)
+	for (i = 0; i < len_seen_links; i++)
 	{
-		if (strcmp(node_name, head_nodes[i]) == 0)
+		if (strcmp(seen_links[i], copy_of_path) == 0)
 		{
-			free(node_name);
-			return true;
+			free(copy_of_path);
+			return 0;
 		}
 	}
 
-	// head not seen, add to head nodes list
-	len_head_nodes++;
+	// the link is new, add it to the list
+	len_seen_links++;
 
-	char ** pointer = realloc(head_nodes, len_head_nodes);
+	char ** pointer = realloc(seen_links, len_seen_links);
 
 	if (pointer == NULL)
 	{
@@ -343,8 +342,8 @@ bool check_head_nodes(const char * path, size_t pathlen)
 	}
 	else
 	{
-		head_nodes = pointer;
-		head_nodes[len_head_nodes - 1] = node_name;
+		seen_links = pointer;
+		seen_links[len_seen_links - 1] = copy_of_path;
 	}
 
 	return false;
