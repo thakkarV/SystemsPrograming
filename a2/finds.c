@@ -1,23 +1,23 @@
-// A2 : Make a find clone . for extra credit, support regex matching
+// a2 : make a find clone . for extra credit, support regex matching
 
 #include <stdlib.h> // printf
 #include <string.h> // strcmp, strpbrk, strcpy, strcat
 #include <unistd.h> // getopt, optopt, optarg
 #include <stdbool.h> // bool support
-#include <stdio.h> // FILE 
-#include <dirent.h> // DIR
+#include <stdio.h> // file 
+#include <dirent.h> // dir
 #include <sys/stat.h> // stat, lstat
 
 static const int max_path_length = 4096;
 
 // color table for printing
-#define NORMAL_COLOR  "\x1B[0m"
-#define RED           "\x1B[31m"
-#define GREEN         "\x1B[32m"
-#define BLUE          "\x1B[34m"
+#define normal_color  "\x1b[0m"
+#define red           "\x1b[31m"
+#define green         "\x1b[32m"
+#define blue          "\x1b[34m"
 
 // the file tree walk function that decends the directory hierarchy
-static int travers(const char * root, const char * match_string);
+int travers(const char * root, const char * match_string);
 
 // parses the contents of regular files to find matches line by line
 int parse_regular(const char * path, const char * match_string);
@@ -28,19 +28,19 @@ bool check_head_nodes(const char * path, size_t pathlen);
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
 static bool pflag = false; // path flag
-static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file only
+static bool fflag = false; // specifies [c|h|s] that parses either .c or .h file only
 static bool sflag = false; // parse match string
 static bool lflag = false; // parses symbolic links too if set
 
-static char * pvalue = NULL; // path to the root of the parse tree
+static char * pvalue = null; // path to the root of the parse tree
 static size_t plength = 0;// size of abs_path in bytes
-static char * fvalue = NULL; // stores the value for the -f flag as a string
-static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
+static char * fvalue = null; // stores the value for the -f flag as a string
+static char * svalue = null; // the value of the s flag is the s string we match for in the parse tree
 static size_t slength = 0;
 static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
 // add an array of pointers to head nodes already seen for symlink traversal
-static char ** head_nodes = NULL;
+static char ** head_nodes = null;
 static size_t len_head_nodes = 0;
 
 int main(int argc, char * argv [])
@@ -94,23 +94,23 @@ int main(int argc, char * argv [])
 	// first make sure we got both the path and the match string
 	if (!pflag || !plength)
 	{
-		printf("%s: Path not specified.\n", argv[0]);
-		exit(EXIT_FAILURE);
+		printf("%s: path not specified.\n", argv[0]);
+		exit(exit_failure);
 	}
 
 	if (!sflag || !slength)
 	{
-		printf("%s: Match string not specified.\n", argv[0]);
-		exit(EXIT_FAILURE);
+		printf("%s: match string not specified.\n", argv[0]);
+		exit(exit_failure);
 	}
 
 	// check for illegal chars in the match string
 
-	char * c =  NULL;
+	char * c =  null;
 	if (c = strpbrk(svalue, invalid_chars))
 	{
-		printf("%s: Invalid charecter(s) %c found in match string.\n", argv[0], c);
-		exit(EXIT_FAILURE);
+		printf("%s: invalid charecter(s) %c found in match string.\n", argv[0], c);
+		exit(exit_failure);
 	}
 
 	// now check if fflag is true, then the vlaue of the flag is valid
@@ -118,14 +118,14 @@ int main(int argc, char * argv [])
 	{
 		if (!fvalue)
 		{
-			printf("No value for -f specified.\n");
-			exit(EXIT_FAILURE);
+			printf("no value for -f specified.\n");
+			exit(exit_failure);
 		}
 
-		if ((*fvalue) != 'c' || (*fvalue) != 'h' || (*fvalue) != 'S')
+		if ((*fvalue) != 'c' && (*fvalue) != 'h' && (*fvalue) != 's')
 		{
-			printf("Invalid input arg %c for -f flag.", fvalue);
-			exit(EXIT_FAILURE);
+			printf("invalid input arg %c for -f flag.", *fvalue);
+			exit(exit_failure);
 		}
 	}
 
@@ -133,7 +133,7 @@ int main(int argc, char * argv [])
 	int ret_val = traverse(pvalue, plength);
 
 	// if we were traversing symlinks, free all the head nodes now
-	if (head_nodes != NULL)
+	if (head_nodes != null)
 	{
 		int i;
 		for (i = 0; i < len_head_nodes; i++)
@@ -142,7 +142,7 @@ int main(int argc, char * argv [])
 		}
 	}
 
- 	exit(EXIT_SUCCESS);
+ 	exit(exit_success);
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
@@ -153,13 +153,13 @@ int traverse(const char * const path, size_t pathlen)
 	// we now lstat the file to tell if it is a link or not
 	if (lstat(path, &statbuf) == -1)
 	{
-		printf("Permission Denied: Could not open %s for reading.\n", path);
+		printf("permission denied: could not open %s for reading.\n", path);
 		return 1;
 	}
 	
-	switch(statbuf.st_mode & S_IFMT)
+	switch(statbuf.st_mode & s_ifmt)
 	{
-		case (S_IFREG):
+		case (s_ifreg):
 		{
 			// regular file
 
@@ -183,7 +183,7 @@ int traverse(const char * const path, size_t pathlen)
 			
 			break;
 		}
-		case (S_IFDIR):
+		case (s_ifdir):
 		{
 			// directory
 			// add this directory to the head nodes list if we have never seen this head node before
@@ -194,17 +194,17 @@ int traverse(const char * const path, size_t pathlen)
 					return 0;
 			}
 			
-			DIR * directory = opendir(path);
-			if (directory == NULL)
+			dir * directory = opendir(path);
+			if (directory == null)
 			{
-				printf("Could not open directory at %s for reading. \n", path);
+				printf("could not open directory at %s for reading. \n", path);
 				return 1;
 			}
 			else
 			{
 				struct dirent * dir_entry;
-				// printf("%s%s%s: Is a directory\n", GREEN, path, NORMAL_COLOR);
-				while ((dir_entry = readdir(directory)) != NULL) 
+				// printf("%s%s%s: is a directory\n", green, path, normal_color);
+				while ((dir_entry = readdir(directory)) != null) 
 				{
 					// if the dir entry is a symbolic link to self or parent, skip it
 					if (strcmp(dir_entry-> d_name, ".") == 0 || strcmp(dir_entry-> d_name, "..") == 0)
@@ -231,7 +231,7 @@ int traverse(const char * const path, size_t pathlen)
 			}
 			break;
 		}
-		case (S_IFLNK):
+		case (s_iflnk):
 		{
 			// symbloic link
 			// only parse symlinks if sflag is true
@@ -248,6 +248,8 @@ int traverse(const char * const path, size_t pathlen)
 				ssize_t size = readlink(path, lnkpath, path_size);
 
 				traverse(lnkpath, size);
+
+				free(lnkpath);
 			}
 			break;
 		}
@@ -256,34 +258,34 @@ int traverse(const char * const path, size_t pathlen)
 
 int parse_regular(const char * path, const char * match_string)
 {
-	FILE * fptr;
+	file * fptr;
 	fptr = fopen(path, "r");
 
 	// check for successful open
-	if (fptr == NULL)
+	if (fptr == null)
 	{
-		printf("Could not open file for reading.\n");
+		printf("could not open file for reading.\n");
 		return 1;
 	}
 
 	// now start looking for matches
 	int matchstr_len = strlen(match_string);
-	// TODO: make this able to read arbitrary length lines
+	// todo: make this able to read arbitrary length lines
 	int bufsize = 1024;
 	char * line_buffer = malloc(sizeof(char) * bufsize);
-	char * start_of_match = NULL;
+	char * start_of_match = null;
 	bool found = false;
 
 	while(!feof(fptr))
 	{
 		fgets(line_buffer, bufsize, fptr);
 		
-		if ((start_of_match = strstr(line_buffer, match_string)) != NULL)
+		if ((start_of_match = strstr(line_buffer, match_string)) != null)
 		{
 			// first we get the length of the first segment of the array
 			size_t seg_1 = start_of_match - line_buffer;
 			printf("%.*s", seg_1, line_buffer);
-			printf("%s%.*s%s", RED, matchstr_len, start_of_match, NORMAL_COLOR);
+			printf("%s%.*s%s", red, matchstr_len, start_of_match, normal_color);
 			start_of_match += matchstr_len;
 			printf("%s", start_of_match);
 		}
@@ -315,14 +317,14 @@ bool check_head_nodes(const char * path, size_t pathlen)
 		}
 	}
 
-	// head not see, add to head nodes list
+	// head not seen, add to head nodes list
 	len_head_nodes++;
 
 	char ** pointer = realloc(head_nodes, len_head_nodes);
 
-	if (pointer == NULL)
+	if (pointer == null)
 	{
-		printf("Realloc of head nodes failed.\n");
+		printf("realloc of head nodes failed.\n");
 	}
 	else
 	{
