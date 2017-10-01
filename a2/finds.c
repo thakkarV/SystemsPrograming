@@ -319,7 +319,10 @@ bool check_seen_links(ino_t inode, ino_t * seen_links)
 	while (couter < len_seen_links)
 	{
 		if (*i == inode)
+		{
+			printf("File system loop detected with inode number %d\n", inode);
 			return true;
+		}
 		couter++;
 		i++;
 	}
