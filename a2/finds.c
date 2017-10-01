@@ -37,7 +37,7 @@ static size_t plength = 0;// size of abs_path in bytes
 static char * fvalue = NULL; // stores the value for the -f flag as a string
 static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
 static size_t slength = 0;
-static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
+static const char const * invalid_chars = "%&#@!"; // chars that are illegal in the input mathc string
 
 // add an array of pointers to head nodes already seen for symlink traversal
 static char ** head_nodes = NULL;
@@ -94,22 +94,20 @@ int main(int argc, char * argv [])
 	// first make sure we got both the path and the match string
 	if (!pflag || !plength)
 	{
-		printf("%s: Path not specified.\n", argv[0]);
+		printf("Path not specified.\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 
 	if (!sflag || !slength)
 	{
-		printf("%s: Match string not specified.\n", argv[0]);
+		printf("Match string not specified.\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
 
 	// check for illegal chars in the match string
-
 	char * c =  NULL;
 	if (c = strpbrk(svalue, invalid_chars))
 	{
-		printf("%s: Invalid charecter(s) %c found in match string.\n", argv[0], c);
 		exit(EXIT_FAILURE);
 	}
 
@@ -153,7 +151,7 @@ int traverse(const char * const path, size_t pathlen)
 	// we now lstat the file to tell if it is a link or not
 	if (lstat(path, &statbuf) == -1)
 	{
-		printf("Permission Denied: Could not open %s for reading.\n", path);
+		printf("'%s': No such file or directory\n", path);
 		return 1;
 	}
 	
@@ -276,7 +274,7 @@ int parse_regular(const char * path, const char * match_string)
 	char * start_of_match = NULL;
 	bool found = false;
 
-	while(!feof(fptr))
+	while(true)
 	{
 		fgets(line_buffer, bufsize, fptr);
 		
@@ -290,6 +288,9 @@ int parse_regular(const char * path, const char * match_string)
 			printf("%s", start_of_match);
 			found = true;
 		}
+
+		if (feof(fptr))
+			break;
 	}
 
 	// print the path to the file if anything matched
