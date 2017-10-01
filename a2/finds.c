@@ -142,7 +142,8 @@ int main(int argc, char * argv [])
 	// if we were traversing symlinks, free all the head nodes now
 	if (head_nodes != NULL)
 	{
-		for (int i = 0; i < len_head_nodes; i++)
+		int i;
+		for (i = 0; i < len_head_nodes; i++)
 		{
 			free(head_nodes[i]);
 		}
@@ -308,7 +309,7 @@ bool check_head_nodes(const char * path, size_t pathlen)
 	// first extract head node from path
 	int len_node_name = strcspn(path, "/");
 	char * node_name = malloc(len_node_name);
-	char * node_name = memcpy(node_name, path, len_node_name);
+	node_name = memcpy(node_name, path, len_node_name);
 
 	int i;
 	for (i = 0; i < len_head_nodes; i++)
