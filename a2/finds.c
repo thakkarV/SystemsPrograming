@@ -8,7 +8,7 @@
 #include <dirent.h> // DIR
 #include <sys/stat.h> // stat, lstat
 
-static const int PATH_MAX = 4096;
+static const int max_path_length = 4096;
 
 // color table for printing
 #define NORMAL_COLOR  "\x1B[0m"
@@ -240,7 +240,7 @@ int traverse(const char * const path, size_t pathlen)
 				int path_size;
 
 				if (statbuf.st_size == 0)
-					path_size = PATH_MAX;
+					path_size = max_path_length;
 				else
 					path_size = statbuf.st_size;
 
