@@ -9,6 +9,7 @@
 #include <sys/stat.h> // stat, lstat
 
 static const int max_path_length = 4096;
+static const int max_links = 512;
 
 // color table for printing
 #define NORMAL_COLOR  "\x1B[0m"
@@ -46,7 +47,7 @@ static size_t len_seen_links = 0;
 int main(int argc, char * argv [])
 {
 	char cmd;
-	char ** seen_links = malloc(512 * sizeof(char *));
+	char ** seen_links = malloc(max_links * sizeof(char *));
 
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
