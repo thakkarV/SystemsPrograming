@@ -135,10 +135,13 @@ int main(int argc, char * argv [])
 	// out starting dir is the path specified, so we set it to that
 	abs_path = malloc(strlen(pvalue));
 	strcpy(abs_path, pvalue);
-	int ret_val = traverse(pvalue, plength);
 
 	printf("Path suppied is %s\n", pvalue);
 	printf("String to match is %s\n", svalue);
+
+	// now traverse the path input
+	int ret_val = traverse(pvalue, plength);
+
 	num_total = num_symlinks + num_regular + num_dirs;
 
 	printf("Number of regualr files = %d\n", num_regular);
@@ -156,7 +159,7 @@ int traverse(const char * const path, size_t pathlen)
 
 	if (stat(path, &statbuf) == -1)
 	{
-		printf("Permission Denied: Could not open path %s for reading.\n", path);
+		printf("Permission Denied: Could not open %s for reading.\n", path);
 		return 1;
 	}
 	
@@ -196,8 +199,9 @@ int traverse(const char * const path, size_t pathlen)
 
 					// for all the contents of the file, construct the pathname to be passed to the parse function
 					// we get the new path length as
-					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 2;
-					char * dirent_path = malloc(dirent_pathlen);
+					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 1;
+					// allocate one more byte for the null terminator
+					char * dirent_path = malloc(dirent_pathlen + 1);
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 
@@ -236,16 +240,17 @@ int parse_regular(const char * path, const char * match_string)
 {
 	FILE * fptr;
 	fptr = fopen(path, "r");
-	int matchstr_len = strlen(match_string);
-	// TODO: make this able to read arbitrary length lines
-	int bufsize = 512;
-	// check
+
+	// check for successful open
 	if (fptr == NULL)
 	{
 		printf("Could not open file for reading.\n");
 		return 1;
 	}
 
+	int matchstr_len = strlen(match_string);
+	// TODO: make this able to read arbitrary length lines
+	int bufsize = 512;
 	char * line_buffer = malloc(sizeof(char) * bufsize);
 	char * start_of_match = NULL;
 	while(!feof(fptr))
