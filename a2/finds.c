@@ -17,6 +17,9 @@
 // the file tree walk function that decends the directory hierarchy
 static int travers(const char * root, const char * match_string);
 
+// check if the current head node of dir path has been seen already or not for symlink parsing
+bool check_head_nodes(const char * path, size_t pathlen);
+
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
 static bool pflag = false; // path flag
@@ -304,8 +307,8 @@ bool check_head_nodes(const char * path, size_t pathlen)
 {
 	// first extract head node from path
 	int len_node_name = strcspn(path, "/");
-	char * node_name = malloc(len_node_name)
-	char * node_name = memcpy(node_name, path, len_node_name)
+	char * node_name = malloc(len_node_name);
+	char * node_name = memcpy(node_name, path, len_node_name);
 
 	for (int i = 0; i < len_head_nodes; i++)
 	{
