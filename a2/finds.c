@@ -18,7 +18,7 @@ static const int max_links = 1024;
 #define BLUE          "\x1B[34m"
 
 // the file tree walk function that decends the directory hierarchy
-int travers(const char * root, const char * match_string, char ** seen_links);
+int traverse(const char * root, size_t pathlen, ino_t * seen_links);
 
 // parses the contents of regular files to find matches line by line
 int parse_regular(const char * path, const char * match_string);
@@ -27,7 +27,7 @@ int parse_regular(const char * path, const char * match_string);
 bool check_seen_links(ino_t inode, ino_t * seen_links);
 
 // declare global vars for cmd args
-static const char const * flags = "p:f:ls:";
+static const char * flags = "p:f:ls:";
 static bool pflag = false; // path flag
 static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file only
 static bool sflag = false; // parse match string
@@ -38,7 +38,7 @@ static size_t plength = 0;// size of abs_path in bytes
 static char * fvalue = NULL; // stores the value for the -f flag as a string
 static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
 static size_t slength = 0;
-static const char const * invalid_chars = "%&#@!"; // chars that are illegal in the input mathc string
+static const char * invalid_chars = "%&#@!"; // chars that are illegal in the input mathc string
 
 // add an array of pointers to head nodes already seen for symlink traversal
 static size_t len_seen_links = 0;
@@ -46,7 +46,7 @@ static size_t len_seen_links = 0;
 int main(int argc, char * argv [])
 {
 	char cmd;
-	ino_t * seen_links = malloc(max_links * sizeof(ino_t));
+	ino_t * seen_links = (ino_t *) malloc(max_links * sizeof(ino_t));
 
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
@@ -128,16 +128,15 @@ int main(int argc, char * argv [])
 	}
 
 	// now traverse the path input
-	int ret_val = traverse(pvalue, plength, seen_links);
+	int retval = traverse(pvalue, plength, seen_links);
 
 	free(seen_links);
 		
-
  	exit(EXIT_SUCCESS);
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
-int traverse(const char * const path, size_t pathlen, ino_t * seen_links)
+int traverse(char * path, size_t pathlen, ino_t * seen_links)
 {
 	struct stat statbuf;
 
@@ -214,7 +213,7 @@ int traverse(const char * const path, size_t pathlen, ino_t * seen_links)
 					// for all the contents of the file, construct the pathname to be passed to the parse function
 					// we get the new path length as
 					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 2;
-					char * dirent_path = malloc(dirent_pathlen);
+					char * dirent_path = (char *) malloc(dirent_pathlen);
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 					
@@ -247,7 +246,7 @@ int traverse(const char * const path, size_t pathlen, ino_t * seen_links)
 				else
 					path_size = statbuf.st_size + 1;
 
-				char * lnkpath = malloc(sizeof(char) * path_size);
+				char * lnkpath = (char *) malloc(sizeof(char) * path_size);
 				ssize_t size = readlink(path, lnkpath, path_size);
 				lnkpath[size] = '\0';
 
@@ -275,7 +274,7 @@ int parse_regular(const char * path, const char * match_string)
 	int matchstr_len = strlen(match_string);
 	// TODO: make this able to read arbitrary length lines
 	int bufsize = 1024;
-	char * line_buffer = malloc(sizeof(char) * bufsize);
+	char * line_buffer = (char *) malloc(sizeof(char) * bufsize);
 	char * start_of_match = NULL;
 	bool found = false;
 
@@ -326,8 +325,6 @@ bool check_seen_links(ino_t inode, ino_t * seen_links)
 		couter++;
 		i++;
 	}
-
-	
 
 	// the link is new, add it to the list
 	if (len_seen_links < max_links)
