@@ -84,7 +84,7 @@ int main(int argc, char * argv [])
 			}
 			case '?':
 			{
-				printf("Unknown option '-%c'.\n", optopt);
+				printf("unknown predicate '%c'\n", optopt);
 				return 1;
 			}
 			default :
@@ -125,7 +125,7 @@ int main(int argc, char * argv [])
 			exit(EXIT_FAILURE);
 		}
 
-		if (*fvalue != 'c' || *fvalue != 'h' || *fvalue != 'S')
+		if ((*fvalue) != 'c' || (*fvalue) != 'h' || (*fvalue) != 'S')
 		{
 			printf("%s: Invalid input arg %c for -f flag.", argv[0], fvalue);
 			exit(EXIT_FAILURE);
@@ -135,9 +135,6 @@ int main(int argc, char * argv [])
 	// out starting dir is the path specified, so we set it to that
 	abs_path = malloc(strlen(pvalue));
 	strcpy(abs_path, pvalue);
-
-	printf("Path suppied is %s\n", pvalue);
-	printf("String to match is %s\n", svalue);
 
 	// now traverse the path input
 	int ret_val = traverse(pvalue, plength);
@@ -167,15 +164,28 @@ int traverse(const char * const path, size_t pathlen)
 	{
 		case (S_IFREG):
 		{
-			// TODO: parse files with specific extensions only
+			// regular file
+
+			// if flag -f is set, look only in files with extension specified
 			if (fflag)
 			{
-
+				//
+				if (path[pathlen - 2] == '.' && path[pathlen - 1] == *fvalue)
+				{
+					parse_regular(path, svalue);
+					num_regular++;
+				}
+				else
+				{
+					return 0;
+				}
 			}
-			// regular file
-			printf("Reading file: %s\n", path);
-			parse_regular(path, svalue);
-			num_regular++;
+			else
+			{
+				parse_regular(path, svalue);
+				num_regular++;
+			}
+			
 			break;
 		}
 		case (S_IFDIR):
@@ -185,12 +195,13 @@ int traverse(const char * const path, size_t pathlen)
 
 			if (directory == NULL)
 			{
-				printf("Could not open directroy at %s for reading. \n", path);
+				printf("Could not open directory at %s for reading. \n", path);
 				return 1;
 			}
 			else
 			{
-				struct dirent * dir_entry; 
+				struct dirent * dir_entry;
+				printf("%s: Is a directory\n", );
 				while ((dir_entry = readdir(directory)) != NULL) 
 				{
 					// if the dir entry is a symbolic link to self or parent, skip it
@@ -247,9 +258,13 @@ int parse_regular(const char * path, const char * match_string)
 		return 1;
 	}
 
+	// print the path to the file first
+	printf("%s\n", path);
+
+	// now start looking for matches
 	int matchstr_len = strlen(match_string);
 	// TODO: make this able to read arbitrary length lines
-	int bufsize = 512;
+	int bufsize = 1024;
 	char * line_buffer = malloc(sizeof(char) * bufsize);
 	char * start_of_match = NULL;
 	while(!feof(fptr))
