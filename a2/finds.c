@@ -20,7 +20,7 @@ static const int max_path_length = 4096;
 static int travers(const char * root, const char * match_string);
 
 // parses the contents of regular files to find matches line by line
-int parse_regular(const char * path, const char * match_string)
+int parse_regular(const char * path, const char * match_string);
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
 bool check_head_nodes(const char * path, size_t pathlen);
