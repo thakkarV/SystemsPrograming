@@ -285,6 +285,13 @@ int parse_regular(const char * path, const char * match_string)
 			printf("%s%.*s%s", RED, matchstr_len, start_of_match, NORMAL_COLOR);
 			start_of_match += matchstr_len;
 			printf("%s", start_of_match);
+
+			// now check if the line has a \n at end or not
+			char * newlinecheck = strchr(start_of_match, '\n');
+
+			if (!newlinecheck)
+				printf("\n");
+
 			found = true;
 		}
 	}
