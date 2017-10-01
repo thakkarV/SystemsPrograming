@@ -288,6 +288,7 @@ int parse_regular(const char * path, const char * match_string)
 			printf("%s%.*s%s", RED, matchstr_len, start_of_match, NORMAL_COLOR);
 			start_of_match += matchstr_len;
 			printf("%s", start_of_match);
+			found = true;
 		}
 	}
 
