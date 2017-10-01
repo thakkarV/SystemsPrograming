@@ -130,21 +130,14 @@ int main(int argc, char * argv [])
 	// now traverse the path input
 	int ret_val = traverse(pvalue, plength, seen_links);
 
-	// if we were traversing symlinks, free all the head nodes now
-	if (seen_links != NULL)
-	{
-		int i;
-		for (i = 0; i < len_seen_links; i++)
-		{
-			free(seen_links[i]);
-		}
-	}
+	free(seen_links);
+		
 
  	exit(EXIT_SUCCESS);
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
-int traverse(const char * const path, size_t pathlen, char ** seen_links)
+int traverse(const char * const path, size_t pathlen, ino_t * seen_links)
 {
 	struct stat statbuf;
 
@@ -320,14 +313,14 @@ int parse_regular(const char * path, const char * match_string)
 bool check_seen_links(ino_t inode, ino_t * seen_links)
 {
 	// head not seen, add to head nodes list
-	int * i = seen_links;
+	ino_t * i = seen_links;
 	int couter = 0;
 
 	while (couter < len_seen_links)
 	{
 		if (*seen_links == inode)
 			return true;
-		counter++;
+		couter++;
 		i++;
 	}
 
