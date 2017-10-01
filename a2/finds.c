@@ -239,7 +239,7 @@ int traverse(const char * const path, size_t pathlen)
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
-				if (check_seen_links(path))
+				if (check_seen_links(path, pathlen))
 					return 0;
 
 				int path_size;
@@ -316,7 +316,7 @@ bool check_seen_links(const char * path, size_t pathlen)
 {
 
 	// first make a copy of the path to the link
-	char * copy_of_path = malloc(strlen(path));
+	char * copy_of_path = malloc(pathlen);
 
 	copy_of_path = strcpy(copy_of_path, path);
 
