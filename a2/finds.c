@@ -46,7 +46,7 @@ static size_t len_seen_links = 0;
 int main(int argc, char * argv [])
 {
 	char cmd;
-	char ** seen_links = malloc(sizeof(char * ) * 1);
+	char ** seen_links = malloc(512 * sizeof(char *));
 
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
@@ -337,19 +337,14 @@ bool check_seen_links(const char * path, size_t pathlen)
 	}
 
 	// the link is new, add it to the list
-	len_seen_links++;
-
-	char ** pointer = realloc(seen_links, len_seen_links);
-
-	if (pointer == NULL)
+	if (len_seen_links < max_links)
 	{
-		printf("Realloc of head nodes failed.\n");
+		seen_links[len_seen_links] = copy_of_path;
+		len_seen_links++;
+		return false;
 	}
 	else
 	{
-		seen_links = pointer;
-		seen_links[len_seen_links - 1] = copy_of_path;
-	}
-
-	return false;
+		return true;
+	}	
 }
