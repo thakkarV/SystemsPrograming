@@ -149,11 +149,23 @@ int traverse(const char * const path, size_t pathlen)
 	struct stat statbuf;
 
 	// we now lstat the file to tell if it is a link or not
-	if (lstat(path, &statbuf) == -1)
+	if (lflag)
 	{
-		printf("'%s': No such file or directory\n", path);
-		return 1;
+		if (stat(path, &statbuf) == -1)
+		{
+			printf("'%s': No such file or directory\n", path);
+			return 1;
+		}
 	}
+	else
+	{
+		if (lstat(path, &statbuf) == -1)
+		{
+			printf("'%s': No such file or directory\n", path);
+			return 1;
+		}
+	}
+
 	
 	switch(statbuf.st_mode & S_IFMT)
 	{
@@ -178,9 +190,7 @@ int traverse(const char * const path, size_t pathlen)
 			{
 				parse_regular(path, svalue);
 			}
-			
-			break;
-		}
+		} break;
 		case (S_IFDIR):
 		{
 			// directory
@@ -227,8 +237,7 @@ int traverse(const char * const path, size_t pathlen)
 				}
 				closedir(directory);
 			}
-			break;
-		}
+		} break;
 		case (S_IFLNK):
 		{
 			// symbloic link
@@ -250,8 +259,8 @@ int traverse(const char * const path, size_t pathlen)
 
 				free(lnkpath);
 			}
-			break;
-		}
+			
+		} break;
 	}
 }
 
