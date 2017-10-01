@@ -199,9 +199,8 @@ int traverse(const char * const path, size_t pathlen)
 
 					// for all the contents of the file, construct the pathname to be passed to the parse function
 					// we get the new path length as
-					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 1;
-					// allocate one more byte for the null terminator
-					char * dirent_path = malloc(dirent_pathlen + 1);
+					size_t dirent_pathlen =  pathlen + strlen(dir_entry-> d_name) + 2;
+					char * dirent_path = malloc(dirent_pathlen);
 					dirent_path[0] = '\0';
 					strcat(dirent_path, path);
 
