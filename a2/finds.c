@@ -51,7 +51,7 @@ int main(int argc, char * argv [])
 {
 	char cmd;
 	char ** head_nodes = malloc(sizeof(char * ) * 1);
-	
+
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
 	{
@@ -132,10 +132,6 @@ int main(int argc, char * argv [])
 			exit(EXIT_FAILURE);
 		}
 	}
-
-	// out starting dir is the path specified, so we set it to that
-	abs_path = malloc(strlen(pvalue));
-	strcpy(abs_path, pvalue);
 
 	// now traverse the path input
 	int ret_val = traverse(pvalue, plength);
@@ -311,7 +307,7 @@ bool check_head_nodes(const char * path, size_t pathlen)
 	char * node_name = malloc(len_node_name)
 	char * node_name = memcpy(node_name, path, len_node_name)
 
-	for (int i 0; i < len_head_nodes; i++)
+	for (int i = 0; i < len_head_nodes; i++)
 	{
 		if (strcmp(node_name, head_nodes[i]) == 0)
 		{
