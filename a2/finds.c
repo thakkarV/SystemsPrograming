@@ -24,7 +24,7 @@ int travers(const char * root, const char * match_string, char ** seen_links);
 int parse_regular(const char * path, const char * match_string);
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
-bool check_seen_links(ino_t inode, ino_t * seen_links)
+bool check_seen_links(ino_t inode, ino_t * seen_links);
 
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
