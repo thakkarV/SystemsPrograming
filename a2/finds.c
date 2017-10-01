@@ -8,6 +8,8 @@
 #include <dirent.h> // DIR
 #include <sys/stat.h> // stat, lstat
 
+static const int PATH_MAX = 4096;
+
 // color table for printing
 #define NORMAL_COLOR  "\x1B[0m"
 #define RED           "\x1B[31m"
@@ -16,6 +18,9 @@
 
 // the file tree walk function that decends the directory hierarchy
 static int travers(const char * root, const char * match_string);
+
+// parses the contents of regular files to find matches line by line
+int parse_regular(const char * path, const char * match_string)
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
 bool check_head_nodes(const char * path, size_t pathlen);
@@ -145,7 +150,8 @@ int traverse(const char * const path, size_t pathlen)
 {
 	struct stat statbuf;
 
-	if (stat(path, &statbuf) == -1)
+	// we now lstat the file to tell if it is a link or not
+	if (lstat(path, &statbuf) == -1)
 	{
 		printf("Permission Denied: Could not open %s for reading.\n", path);
 		return 1;
@@ -227,13 +233,22 @@ int traverse(const char * const path, size_t pathlen)
 		}
 		case (S_IFLNK):
 		{
-			// TODO: keep memory of nodes visited and do not visit again for symlinks
+			// symbloic link
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
-				// lstat(path);
+				int path_size;
+
+				if (statbuf.st_size == 0)
+					path_size = PATH_MAX;
+				else
+					path_size = statbuf.st_size;
+
+				char * lnkpath = malloc(sizeof(char) * path_size);
+				ssize_t size = readlink(path, lnkpath, path_size);
+
+				traverse(lnkpath, size);
 			}
-			// symbloic link
 			break;
 		}
 	}
@@ -257,6 +272,8 @@ int parse_regular(const char * path, const char * match_string)
 	int bufsize = 1024;
 	char * line_buffer = malloc(sizeof(char) * bufsize);
 	char * start_of_match = NULL;
+	bool found = false;
+
 	while(!feof(fptr))
 	{
 		fgets(line_buffer, bufsize, fptr);
@@ -272,8 +289,9 @@ int parse_regular(const char * path, const char * match_string)
 		}
 	}
 
-	// print the path to the file
-	printf("%s\n", path);
+	// print the path to the file if anything matched
+	if (found)
+		printf("%s\n", path);
 
 	free(line_buffer);
 	fclose(fptr);
