@@ -318,7 +318,7 @@ bool check_seen_links(ino_t inode, ino_t * seen_links)
 
 	while (couter < len_seen_links)
 	{
-		if (*seen_links == inode)
+		if (*i == inode)
 			return true;
 		couter++;
 		i++;
