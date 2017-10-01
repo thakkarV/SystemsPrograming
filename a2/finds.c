@@ -34,18 +34,6 @@ static char * svalue = NULL; // the value of the s flag is the s string we match
 static size_t slength = 0;
 static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
-// declare global vars for walker
-static long num_regular = 0;
-static long num_dirs = 0;
-static long num_symlinks = 0;
-static long num_total = 0;
-
-// define files types as const ints
-static const int FTW_FILE = 1; // readable file
-static const int FTW_DIR = 2; // openable dir
-static const int FTW_NO_DIR = 3; // dir with no read permission
-static const int FTW_NO_STAT = 4; // file that we cannot stat
-
 // add an array of pointers to head nodes already seen for symlink traversal
 static char ** head_nodes = NULL;
 static size_t len_head_nodes = 0;
@@ -149,14 +137,6 @@ int main(int argc, char * argv [])
 		}
 	}
 
-	num_total = num_symlinks + num_regular + num_dirs;
-
-	printf("Number of regualr files = %d\n", num_regular);
-	printf("Number of symlinks = %d\n", num_symlinks);
-	printf("Number of directories = %d\n", num_dirs);
-	printf("Total number of files = %d\n", num_total);
-
-
  	exit(EXIT_SUCCESS);
 }
 
@@ -184,7 +164,6 @@ int traverse(const char * const path, size_t pathlen)
 				if (path[pathlen - 2] == '.' && path[pathlen - 1] == *fvalue)
 				{
 					parse_regular(path, svalue);
-					num_regular++;
 				}
 				else
 				{
@@ -194,7 +173,6 @@ int traverse(const char * const path, size_t pathlen)
 			else
 			{
 				parse_regular(path, svalue);
-				num_regular++;
 			}
 			
 			break;
@@ -244,7 +222,6 @@ int traverse(const char * const path, size_t pathlen)
 					free(dirent_path);
 				}
 				closedir(directory);
-				num_dirs++;
 			}
 			break;
 		}
@@ -257,7 +234,6 @@ int traverse(const char * const path, size_t pathlen)
 				// lstat(path);
 			}
 			// symbloic link
-			num_symlinks++;
 			break;
 		}
 	}
