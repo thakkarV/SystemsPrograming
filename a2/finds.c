@@ -327,7 +327,7 @@ bool check_seen_links(const char * path, size_t pathlen)
 		if (strcmp(seen_links[i], copy_of_path) == 0)
 		{
 			free(copy_of_path);
-			return 0;
+			return true;
 		}
 	}
 
