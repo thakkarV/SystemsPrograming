@@ -18,13 +18,13 @@ static const int max_links = 512;
 #define BLUE          "\x1B[34m"
 
 // the file tree walk function that decends the directory hierarchy
-int travers(const char * root, const char * match_string);
+int travers(const char * root, const char * match_string, char ** seen_links);
 
 // parses the contents of regular files to find matches line by line
 int parse_regular(const char * path, const char * match_string);
 
 // check if the current head node of dir path has been seen already or not for symlink parsing
-bool check_seen_links(const char * path, size_t pathlen);
+bool check_seen_links(const char * path, size_t pathlen, char ** seen_links);
 
 // declare global vars for cmd args
 static const char const * flags = "p:f:ls:";
@@ -41,7 +41,6 @@ static size_t slength = 0;
 static const char const * invalid_chars = "%&#@!"; // chars that are illegal in the input mathc string
 
 // add an array of pointers to head nodes already seen for symlink traversal
-static char ** seen_links = NULL;
 static size_t len_seen_links = 0;
 
 int main(int argc, char * argv [])
@@ -129,7 +128,7 @@ int main(int argc, char * argv [])
 	}
 
 	// now traverse the path input
-	int ret_val = traverse(pvalue, plength);
+	int ret_val = traverse(pvalue, plength, seen_links);
 
 	// if we were traversing symlinks, free all the head nodes now
 	if (seen_links != NULL)
@@ -145,7 +144,7 @@ int main(int argc, char * argv [])
 }
 
 // main os tree walker that recursively traverses the file tree, calling parser on all files
-int traverse(const char * const path, size_t pathlen)
+int traverse(const char * const path, size_t pathlen, char ** seen_links)
 {
 	struct stat statbuf;
 
@@ -199,7 +198,7 @@ int traverse(const char * const path, size_t pathlen)
 			// if we have seen this before, skip it
 			if (lflag)
 			{
-				if (check_seen_links(path, pathlen))
+				if (check_seen_links(path, pathlen, seen_links))
 					return 0;
 			}	
 
@@ -232,7 +231,7 @@ int traverse(const char * const path, size_t pathlen)
 					strcat(dirent_path, dir_entry-> d_name);
 
 					// now recursively call traverse on all directory contents
-					int retval = traverse(dirent_path, dirent_pathlen);
+					int retval = traverse(dirent_path, dirent_pathlen, seen_links);
 
 					free(dirent_path);
 				}
@@ -245,7 +244,7 @@ int traverse(const char * const path, size_t pathlen)
 			// only parse symlinks if sflag is true
 			if (sflag)
 			{
-				if (check_seen_links(path, pathlen))
+				if (check_seen_links(path, pathlen, seen_links))
 					return 0;
 
 				int path_size;
@@ -259,7 +258,7 @@ int traverse(const char * const path, size_t pathlen)
 				ssize_t size = readlink(path, lnkpath, path_size);
 				lnkpath[size] = '\0';
 
-				traverse(lnkpath, size);
+				traverse(lnkpath, size, seen_links);
 
 				free(lnkpath);
 			}
@@ -318,7 +317,7 @@ int parse_regular(const char * path, const char * match_string)
 	return 0;
 }
 
-bool check_seen_links(const char * path, size_t pathlen)
+bool check_seen_links(const char * path, size_t pathlen, char ** seen_links)
 {
 
 	// first make a copy of the path to the link
