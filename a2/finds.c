@@ -196,6 +196,11 @@ int traverse(const char * const path, size_t pathlen)
 			// directory
 			// add this directory to the head nodes list if we have never seen this head node before
 			// if we have seen this before, skip it
+			if (lflag)
+			{
+				if (check_seen_links(path, pathlen))
+					return 0;
+			}	
 
 			DIR * directory = opendir(path);
 			if (directory == NULL)
