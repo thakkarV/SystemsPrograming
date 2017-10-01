@@ -274,9 +274,8 @@ int parse_regular(const char * path, const char * match_string)
 	char * start_of_match = NULL;
 	bool found = false;
 
-	while(true)
+	while(fgets(line_buffer, bufsize, fptr))
 	{
-		fgets(line_buffer, bufsize, fptr);
 		
 		if ((start_of_match = strstr(line_buffer, match_string)) != NULL)
 		{
@@ -288,9 +287,6 @@ int parse_regular(const char * path, const char * match_string)
 			printf("%s", start_of_match);
 			found = true;
 		}
-
-		if (feof(fptr))
-			break;
 	}
 
 	// print the path to the file if anything matched
