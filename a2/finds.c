@@ -310,7 +310,8 @@ bool check_head_nodes(const char * path, size_t pathlen)
 	char * node_name = malloc(len_node_name);
 	char * node_name = memcpy(node_name, path, len_node_name);
 
-	for (int i = 0; i < len_head_nodes; i++)
+	int i;
+	for (i = 0; i < len_head_nodes; i++)
 	{
 		if (strcmp(node_name, head_nodes[i]) == 0)
 		{
