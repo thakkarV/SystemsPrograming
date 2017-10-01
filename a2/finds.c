@@ -240,11 +240,13 @@ int traverse(const char * const path, size_t pathlen)
 				if (statbuf.st_size == 0)
 					path_size = max_path_length;
 				else
-					path_size = statbuf.st_size;
+					path_size = statbuf.st_size + 1;
 
 				char * lnkpath = malloc(sizeof(char) * path_size);
+				lnkpath[path_size]
 				ssize_t size = readlink(path, lnkpath, path_size);
-
+				lnkpath[size] = '\0';
+				
 				traverse(lnkpath, size);
 
 				free(lnkpath);
