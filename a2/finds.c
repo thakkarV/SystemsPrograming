@@ -197,7 +197,7 @@ int traverse(const char * const path, size_t pathlen)
 			else
 			{
 				struct dirent * dir_entry;
-				printf("%s%s%s: Is a directory\n", GREEN, path, NORMAL_COLOR);
+				// printf("%s%s%s: Is a directory\n", GREEN, path, NORMAL_COLOR);
 				while ((dir_entry = readdir(directory)) != NULL) 
 				{
 					// if the dir entry is a symbolic link to self or parent, skip it
@@ -251,9 +251,6 @@ int parse_regular(const char * path, const char * match_string)
 		return 1;
 	}
 
-	// print the path to the file first
-	printf("%s%s%s\n", BLUE, path, NORMAL_COLOR);
-
 	// now start looking for matches
 	int matchstr_len = strlen(match_string);
 	// TODO: make this able to read arbitrary length lines
@@ -274,6 +271,9 @@ int parse_regular(const char * path, const char * match_string)
 			printf("%s", start_of_match);
 		}
 	}
+
+	// print the path to the file
+	printf("%s\n", path);
 
 	free(line_buffer);
 	fclose(fptr);
