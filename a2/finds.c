@@ -8,16 +8,17 @@
 #include <dirent.h> // DIR
 #include <sys/stat.h> // stat, lstat
 
+// color table for printing
 #define NORMAL_COLOR  "\x1B[0m"
-#define RED     "\x1B[31m"
-#define GREEN  "\x1B[32m"
-#define BLUE  "\x1B[34m"
+#define RED           "\x1B[31m"
+#define GREEN         "\x1B[32m"
+#define BLUE          "\x1B[34m"
 
 // the file tree walk function that decends the directory hierarchy
 static int travers(const char * root, const char * match_string);
 
 // declare global vars for cmd args
-static const char const * flags = "p:f::l::s:";
+static const char const * flags = "p:f:ls:";
 static bool pflag = false; // path flag
 static bool fflag = false; // specifies [c|h|S] that parses either .c or .h file only
 static bool sflag = false; // parse match string
@@ -27,6 +28,7 @@ static char * pvalue = NULL; // path to the root of the parse tree
 static size_t plength = 0;// size of abs_path in bytes
 static char * fvalue = NULL; // stores the value for the -f flag as a string
 static char * svalue = NULL; // the value of the s flag is the s string we match for in the parse tree
+static size_t slength = 0;
 static const char const * invalid_chars = "%&()#@!"; // chars that are illegal in the input mathc string
 
 // declare global vars for walker
@@ -35,21 +37,20 @@ static long num_dirs = 0;
 static long num_symlinks = 0;
 static long num_total = 0;
 
-// static parse_file parser;
-
 // define files types as const ints
 static const int FTW_FILE = 1; // readable file
 static const int FTW_DIR = 2; // openable dir
 static const int FTW_NO_DIR = 3; // dir with no read permission
 static const int FTW_NO_STAT = 4; // file that we cannot stat
 
-static char * abs_path = NULL; // the path to the file/dir currently being parsed
-static size_t abs_plength = 0;
-static size_t slength = 0;
+// add an array of pointers to head nodes already seen for symlink traversal
+static char ** head_nodes = NULL;
+static size_t len_head_nodes = 0;
 
 int main(int argc, char * argv [])
 {
 	char cmd;
+	char ** head_nodes = malloc(sizeof(char * ) * 1);
 	
 	// first get all command line arguments to form parse rules
 	while ((cmd = getopt(argc, argv, flags)) != -1)
@@ -139,12 +140,22 @@ int main(int argc, char * argv [])
 	// now traverse the path input
 	int ret_val = traverse(pvalue, plength);
 
+	// if we were traversing symlinks, free all the head nodes now
+	if (head_nodes != NULL)
+	{
+		for (int i = 0; i < len_head_nodes; i++)
+		{
+			free(head_nodes[i]);
+		}
+	}
+
 	num_total = num_symlinks + num_regular + num_dirs;
 
 	printf("Number of regualr files = %d\n", num_regular);
 	printf("Number of symlinks = %d\n", num_symlinks);
 	printf("Number of directories = %d\n", num_dirs);
 	printf("Total number of files = %d\n", num_total);
+
 
  	exit(EXIT_SUCCESS);
 }
@@ -191,8 +202,15 @@ int traverse(const char * const path, size_t pathlen)
 		case (S_IFDIR):
 		{
 			// directory
+			// add this directory to the head nodes list if we have never seen this head node before
+			// if we have seen this before, skip it
+			if (lflag)
+			{
+				if (check_head_nodes(path, pathlen))
+					return 0;
+			}
+			
 			DIR * directory = opendir(path);
-
 			if (directory == NULL)
 			{
 				printf("Could not open directory at %s for reading. \n", path);
@@ -201,7 +219,7 @@ int traverse(const char * const path, size_t pathlen)
 			else
 			{
 				struct dirent * dir_entry;
-				printf("%s: Is a directory\n", path);
+				printf("%s%s%s: Is a directory\n", GREEN, path, NORMAL_COLOR);
 				while ((dir_entry = readdir(directory)) != NULL) 
 				{
 					// if the dir entry is a symbolic link to self or parent, skip it
@@ -245,7 +263,6 @@ int traverse(const char * const path, size_t pathlen)
 	}
 }
 
-
 int parse_regular(const char * path, const char * match_string)
 {
 	FILE * fptr;
@@ -259,7 +276,7 @@ int parse_regular(const char * path, const char * match_string)
 	}
 
 	// print the path to the file first
-	printf("%s\n", path);
+	printf("%s%s%s\n", BLUE, path, NORMAL_COLOR);
 
 	// now start looking for matches
 	int matchstr_len = strlen(match_string);
@@ -285,4 +302,38 @@ int parse_regular(const char * path, const char * match_string)
 	free(line_buffer);
 	fclose(fptr);
 	return 0;
+}
+
+bool check_head_nodes(const char * path, size_t pathlen)
+{
+	// first extract head node from path
+	int len_node_name = strcspn(path, "/");
+	char * node_name = malloc(len_node_name)
+	char * node_name = memcpy(node_name, path, len_node_name)
+
+	for (int i 0; i < len_head_nodes; i++)
+	{
+		if (strcmp(node_name, head_nodes[i]) == 0)
+		{
+			free(node_name);
+			return true;
+		}
+	}
+
+	// head not see, add to head nodes list
+	len_head_nodes++;
+
+	char ** pointer = realloc(head_nodes, len_head_nodes);
+
+	if (pointer == NULL)
+	{
+		printf("Realloc of head nodes failed.\n");
+	}
+	else
+	{
+		head_nodes = pointer;
+		head_nodes[len_head_nodes - 1] = node_name;
+	}
+
+	return false;
 }
