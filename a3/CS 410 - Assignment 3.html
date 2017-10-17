@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!-- saved from url=(0073)http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/assignments/a3/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux
+      2.4.9-6 i686) [Netscape]">
+    <title>CS 410 - Assignment 3</title>
+  <style type="text/css">
+:root #content > #right > .dose > .dosesingle,
+:root #content > #center > .dose > .dosesingle,
+:root #header + #content > #left > #rlblock_left
+{ display: none !important; }</style></head>
+  <body bgcolor="#ffffff" text="#000000">
+    &nbsp;
+    <table nosave="" border="0" width="95%">
+      <tbody>
+        <tr nosave="">
+          <td nosave="" style="font-weight: bold;" width="28%">CS 410</td>
+          <td style="font-weight: bold;" width="44%">
+            <center>Systems Programming</center>
+          </td>
+          <td nosave="" style="font-weight: bold;" width="28%">
+            <center>Instructor: Eric Missimer <br>
+            </center>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <center><u><font size="+3">Assignment 3</font></u></center>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr align="center"> <b>Note</b>: Please follow the assignment guidelines
+    carefully and submit exactly the information that is required. Anyone who
+    fails to submit files in the correct format (i.e., adhering to name
+    conventions etc) will not be graded.
+    <h2><u>Purpose</u></h2> The purpose of this assignment is to
+    become familiar with the primitives used in process control and
+    inter-process communication.  You may
+    utilize <a href="http://www.kohala.com/start/apue.html">source
+    code from the course text book</a>, as necessary.
+
+    <p>
+      In this assignment you are permitted to work in groups of up to TWO
+      people, should you so choose. Those who work in groups (HIGHLY
+      RECOMMENDED!) are required to evaluate both themselves and their group
+      member. Evaluations should be private and unknown to the other group
+      member.
+    </p>
+
+    <h2><u>Idea</u></h2>
+    <p>
+      In this project, you are going to implement a basic shell called
+      "myshell", to learn how a command interpreter works. You will need to
+      write a simple parser to interpret commands, and then you will need to use
+      fork/exec functions to create and execute these commands. I/O redirection
+      and the use of pipes will also be required.
+    </p>
+
+    In order to successfully complete the assignment, you will have to implement
+    certain concepts, including interprocess communication (pipes), process
+    creation and execution. Relevant functions include:
+    <font face="Courier New,Courier"> kill, pipe, fork, execve</font> etc.
+    <p>This assignment will require a thorough understanding of how a system
+      functions, and so it is to your benefit to truly think about the model
+      that follows <b>before</b> you start to code (ie.  good planning will
+      definitely pay off). </p>
+
+
+<h2><u>"Myshell" specification</u><br>
+</h2>
+<p> The specification of "myshell" is similar to the "bash" shell, with
+the following requirements:</p>
+<blockquote>
+  <p>1. Execution file: the execution file for this project
+should be called "myshell".</p>
+  <p></p>
+  <p>2. Shell prompt: If the input to the "myshell" program is from a
+terminal, you should print "myshell&gt;" as the prompt for the user to
+type in the shell command. If the input is from a file, you should not
+print any prompt, as this will help when it comes to testing your
+projects. NOTE: You can use the "isatty" function to determine whether
+the input (via a specific file descriptor) is from a terminal or not. </p>
+  <p>3. Command execution and shell termination: "myshell" reads its
+input from <em>stdin, </em>parsing the command line to determine how
+to execute the shell request. Termination of "myshell" occurs either
+when a user types "ctrl-d", or when the program issues an "exit()" call
+due to some error/termination condition. <br>
+  </p>
+  <p>The following table describes the valid command line formats.</p>
+</blockquote>
+<div align="center">
+<table border="1" width="726">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span style="font-weight: bold;">Command
+Line Format</span><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-weight: bold;">Description</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td width="185">cmd</td>
+      <td width="525">A single command that identifies the name of a
+program file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td>cmd; cmd</td>
+      <td>A sequence of commands: "myshell" should execute them one
+after another.</td>
+    </tr>
+    <tr>
+      <td>cmd &gt; output_file</td>
+      <td>Redirect stdout of the cmd to the file with the name
+"output_file".</td>
+    </tr>
+    <tr>
+      <td>cmd &lt; input_file </td>
+      <td>Redirect stdin of the cmd to the file with the name
+"input_file.</td>
+    </tr>
+    <tr>
+      <td>cmd 1&gt; output_file </td>
+      <td>Redirect stdout of the cmd to the file with the name
+"output_file".</td>
+    </tr>
+    <tr>
+      <td>cmd 2&gt; output_file </td>
+      <td>Redirect stderr of the cmd to the file with the name
+"output_file".</td>
+    </tr>
+    <tr>
+      <td>cmd &amp;&gt; output_file</td>
+      <td>Redirect both stdout and stderr of the cmd to the file with
+the name "output_file".</td>
+    </tr>
+    <tr>
+      <td>cmd1 | cmd2 | cmd3 </td>
+      <td>Pipeline the output of the command before each "|" symbol to
+the input of the command after the same "|" symbol. <br>
+      </td>
+    </tr>
+    <tr>
+      <td>cmd &amp; </td>
+      <td>"myshell" should let cmd execute in the background, so that
+the shell can interpret further input commands.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<blockquote>
+  <p>4. Special Input: "ctrl-c" is the default key sequence to send a
+"SIGINT" signal to a process. In "myshell", you should intercept this
+signal, and send it to all "foreground" processes to stop them instead
+of stopping "myshell". </p>
+  <p>5. Prevent "zombie" children: when a command running in the
+background finishes, it must inform&nbsp; the "myshell" (parent)
+process via a "SIGCHLD" signal. "myshell" can then keep track of which
+child processes are still active. </p>
+</blockquote>
+<h2><u>Hints and tips</u></h2>
+<ul>
+  <li>
+    <p>You should use the "fork" syscall to create each child of
+"myshell" and then one of the "exec*" functions to execute the command
+in the corresponding child's address space. You should also use either
+the "wait" or "waitpid" function to determine the exit status of a
+terminating child.</p>
+  </li>
+</ul>
+<ul>
+  <li>
+    <p>For output redirection and piping between processes: to
+redirect
+a file descriptor to <span style="font-style: italic;">stdin</span>, <span style="font-style: italic;">stdout</span>, or <span style="font-style: italic;">stderr</span> you can use the "dup2"
+function.</p>
+  </li>
+</ul>
+<ul>
+  <li>
+    <p>In the following example, "fname" is used as the "standard
+input"
+(by convention file descriptor 0) of the command: </p>
+  </li>
+</ul>
+<blockquote>
+  <pre>if (( fd = open ( fname, O_RDONLY )) == -1 )<br>{<br>    fprintf( stderr, "mysh error: can't open %s\n", fname);<br>    exit(1);<br>}<br><br>dup2(fd, 0);<br>close(fd);<br><br>if( execvp(cmd, argv) == -1 )<br>{<br>    fprintf(stderr, "myshell error: %s\n", strerror(errno) );<br>}<br></pre>
+</blockquote>
+<ul>
+  <li>
+    <p>You are recommended to develop your code in a series of stages: </p>
+  </li>
+</ul>
+<ol>
+  <ol>
+    <li>write and test a parser to read the command lines </li>
+    <li>get the simple commands to work </li>
+    <li> get I/O redirection to work </li>
+    <li> get pipes to work </li>
+    <li>get "&amp;" to work</li>
+  </ol>
+</ol>
+<ul>
+  <li>
+    <p><span style="font-style: italic;"></span>Parsing shell strings:
+in this project, you only need to implement a
+simple command line parser, in which we use "space" as the delimiter
+between command "tokens". You can use support libraries such as the Gnu
+readline library for command line parsing
+(http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html) but please
+state any such libraries you use for parsing in a README file.</p>
+  </li>
+</ul>
+
+<h2><u>Reference Links</u></h2>
+<ul>
+  <li> <b><a href="http://www.tldp.org/LDP/Bash-Beginners-Guide/html/index.html">Bash
+Guide for Beginners</a></b>
+(http://www.tldp.org/LDP/Bash-Beginners-Guide/html/index.html)</li>
+  <li> <b><a href="http://www.tldp.org/LDP/abs/html/index.html">Advanced
+Bash-Scripting Guide</a></b>
+(http://www.tldp.org/LDP/abs/html/index.html) </li>
+  <li>GNU Bash Online Manual is available
+ at <a href="http://www.gnu.org/software/bash/manual/bash.html">www.gnu.org/software/bash/manual/bash.html</a>
+  </li>
+  <li>Advanced Programming in the UNIX Environment by W. Richard Stevens</li>
+</ul>
+
+
+<h2><u>Testing</u></h2>
+
+<p>
+  Testing scripts can be found <a href="http://cs-people.bu.edu/missimer/teaching/cs410_2017_fall/assignments/a3/shell_test_cases.tar.gz">
+  here</a>.  For each script you can do bash &lt; script and compare the
+  results to ./myshell &lt; script.  Note that some scripts have no ouput as they
+  redirect output to a file.  There is a bonus script that tests "cd".  Finally,
+  note that the test scripts do not test all functionality that will be graded
+  such as proper handling of ctrl+c and ctrl+d.
+</p>
+
+<h2><u>Submission</u></h2>
+
+<p>
+All source code and a Makefile should be gsubmitted to <font face="Courier New,
+Courier, mono">a3/</font>.  Make sure you include a README file to explain the
+features and limitations of your solution. Also, if you work in a group, please
+include in your gsubmit submission what portions you worked on specifically
+along with an evaluation of your group member.
+</p>
+
+<p>
+NOTE: Everyone in the group should submit the files separately.
+</p>
+
+
+
+</body></html>

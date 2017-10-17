@@ -1,0 +1,1 @@
+ls -lth 1> output2.txt
