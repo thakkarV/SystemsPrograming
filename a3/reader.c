@@ -1,6 +1,7 @@
 #include "reader.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 const int buf_size = 512;
 

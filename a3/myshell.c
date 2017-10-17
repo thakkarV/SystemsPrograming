@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdbool.h>
 #include "reader.h"
 
 int main(int argc, char const * argv [])
