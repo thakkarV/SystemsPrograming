@@ -1,12 +1,8 @@
 #include "reader.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-
-const int buf_size = 512;
 
 char * read_input(bool * termiante)
 {
+	int buf_size = 512;
 	char c;
 	int index = 0;
 	char * readbuf = malloc(sizeof(char) * buf_size);
