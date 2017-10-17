@@ -25,7 +25,7 @@ char * read_input(bool * termiante)
 			readbuf[index++] = c;
 		}
 
-		// handle reallcs
+		// handle reallocs
 		if (index >= buf_size)
 		{
 			buf_size += buf_size;
@@ -34,6 +34,7 @@ char * read_input(bool * termiante)
 			if (!readbuf)
 			{
 				perror("Realloc failed.");
+				exit(1);
 			}
 		}
 	}

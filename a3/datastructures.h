@@ -1,0 +1,27 @@
+#ifndef STRUCTS
+#define STRUCTS
+
+// implements a linked list of processes
+typedef struct process
+{
+	char ** argv;
+	struct process * next; // the next process after this one
+	pid_t pid;             // PID of this process
+	bool completed;        // true if completed execution, flase if not
+	bool is_background;    // true if put into background, false if not
+	int status;            // return status from this process, once it has exited
+	int stdin;             // IO redirection channel for standard in
+	int stdout;            // IO redirection channel standard out
+	int stderr;            // IO redirection channel for standard error
+} process;
+
+
+// TODO: double linked list of input commands from the user for enabling command history using up/down arrows
+typedef struct input
+{
+	char * input_line;
+	struct input * previous;
+	struct input * next;
+} input;
+
+#endif
