@@ -15,7 +15,7 @@ int main(int argc, char const * argv [])
 	{
 		printf(prompt);
 
-		input = read_input(terminate);
+		input = read_input(&terminate);
 
 		printf(input);
 

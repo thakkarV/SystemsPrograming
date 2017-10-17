@@ -5,7 +5,7 @@
 
 const int buf_size = 512;
 
-char * read_input(bool & termiante)
+char * read_input(bool * termiante)
 {
 	char c;
 	int index = 0;
@@ -20,7 +20,7 @@ char * read_input(bool & termiante)
 			readbuf[index] = '\0';
 
 			if (c == EOF)
-				termiante = true;
+				*termiante = true;
 
 			return readbuf;
 		}
