@@ -7,6 +7,10 @@
 
 #include "datastructures.h"
 
+const char const * delims = "<|>;& \t";
+size_t num_procs = 4;
+size_t num_args = 4;
+
 // converts the commands seperated by tokenizer into processes to be executed
 process ** parse(char * readbuf)
 {
