@@ -7,4 +7,4 @@
 
 char * read_input(bool * termiante);
 
-#endif
+#endif // READER

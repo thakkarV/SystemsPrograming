@@ -1,6 +1,6 @@
 CC = gcc
 
-OBJS = myshell.o shell_funcs.o
+OBJS = myshell.o reader.o parser.o
 
 .PHONY: all clean
 
@@ -12,8 +12,11 @@ myshell: $(OBJS)
 myshell.o: myshell.c
 	$(CC) -c myshell.c
 
-shell_funcs.o: shell_funcs.c shell_funcs.h
-	$(CC) -c shell_funcs.c
+reader.o: reader.c reader.h
+	$(CC) -c reader.c
+
+parser.o: parser.c parser.h
+	$(CC) -c parser.c
 	
 clean:
 	rm -rf $(OBJS)

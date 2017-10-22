@@ -1,1 +1,1 @@
-ls -lth test_cases > output.txt
+ls -lth /bin > output.txt

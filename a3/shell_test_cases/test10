@@ -1,1 +1,1 @@
-ls -l test_cases | cat | grep test
+ls -l /bin/ | grep zip | grep un
