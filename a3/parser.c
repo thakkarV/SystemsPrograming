@@ -12,14 +12,14 @@ process ** parse(char * readbuf)
 
 	char * start_ptr = readbuf;
 	char * end_ptr = strpbrk(start_ptr, delims);
-	char delim;
-	char previous_delim;
+	char * delim;
+	char * previous_delim;
 
 	init_proc(p);
 	while (end_ptr != NULL)
 	{
-		delim = *end_ptr;
-		switch (delim)
+		delim = end_ptr;
+		switch (*delim)
 		{
 			case ';': // new cmd
 			{
@@ -51,7 +51,7 @@ process ** parse(char * readbuf)
 			case '>': // stdout redir
 			{
 				// this is a compicated case, we have to check for 1> or 2>, %> will be caught by the & case
-				previous_char = *(end_ptr - 1);
+				char previous_char = *(end_ptr - 1);
 				switch (previous_char)
 				{
 					case '&': // will be handled by '&' case
@@ -135,7 +135,7 @@ process ** parse(char * readbuf)
 
 		start_ptr = end_ptr;
 		end_ptr = strpbrk(start_ptr, delims);
-		previous_delim = delim;
+		*previous_delim = *delim;
 	}
 
 	// the last process might have been missing if no ';' was at the end
