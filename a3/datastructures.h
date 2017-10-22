@@ -32,6 +32,9 @@ void init_proc(process * p)
 	p->next = NULL;
 	p->completed = false;
 	p->is_background = false;
+	p->f_stdin = NULL;
+	p->f_stdout = NULL;
+	p->f_stderr = NULL;
 	p->pipe_next = false;
 }
 
