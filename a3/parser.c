@@ -1,5 +1,12 @@
 #include "parser.h"
 
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "datastructures.h"
+
 // converts the commands seperated by tokenizer into processes to be executed
 process ** parse(char * readbuf)
 {

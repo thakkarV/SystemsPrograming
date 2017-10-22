@@ -1,5 +1,9 @@
 #include "reader.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 char * read_input(bool * termiante)
 {
 	int buf_size = 512;
