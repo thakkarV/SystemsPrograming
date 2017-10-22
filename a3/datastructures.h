@@ -1,6 +1,8 @@
 #ifndef STRUCTS
 #define STRUCTS
 
+#include <stdbool.h>
+
 // implements a linked list of processes
 typedef struct process
 {
