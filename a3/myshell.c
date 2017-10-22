@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "reader.h"
+#include "parser.h"
 #include "datastructures.h"
 
 int main(int argc, char const * argv [])

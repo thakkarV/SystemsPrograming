@@ -144,16 +144,3 @@ process ** parse(char * readbuf)
 
 	return procs;
 }
-
-// initializes all default fields for the process struct
-void init_proc(process * p)
-{
-	p->argv = NULL;
-	p->next = NULL;
-	p->completed = false;
-	p->is_background = false;
-	p->f_stdin = NULL;
-	p->f_stdout = NULL;
-	p->f_stderr = NULL;
-	p->pipe_next = false;
-}
