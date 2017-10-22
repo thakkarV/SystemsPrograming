@@ -28,6 +28,7 @@ typedef struct input
 // initializes all default fields for the process struct
 void init_proc(process * p)
 {
+	p->argv = NULL;
 	p->next = NULL;
 	p->completed = false;
 	p->is_background = false;

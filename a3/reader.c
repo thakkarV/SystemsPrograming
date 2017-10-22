@@ -33,7 +33,7 @@ char * read_input(bool * termiante)
 
 			if (!readbuf)
 			{
-				perror("Realloc failed.");
+				perror("realloc");
 				exit(1);
 			}
 		}

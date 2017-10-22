@@ -5,9 +5,10 @@ process ** parse(char * readbuf)
 {
 	process ** procs = malloc(num_procs * sizeof(process *));
 	process * p = malloc(sizeof(process));
+	process * p_next = NULL;
 	int proc_index = 0;
-	int args_counter = 0;
-	char ** args = malloc(num_args * sizeof(char *))
+	int proc_args_index = 0;
+	char ** args = malloc(num_args * sizeof(char *));
 
 	char * start_ptr = readbuf;
 	char * end_ptr = strpbrk(start_ptr, delims);
@@ -94,6 +95,22 @@ process ** parse(char * readbuf)
 			case '|':  // pipe
 			{
 				p->pipe_next = true;
+				procs[proc_index++] = p;
+				p_next = malloc(sizeof(process));
+				init_proc(p_next);
+				p->next = p_next;
+				p = p_next;
+
+				if (proc_index >= num_procs)
+				{
+					num_procs += num_procs;
+					procs = realloc(procs, num_procs * sizeof(process *));
+					if (!procs)
+					{
+						perror("realloc");
+						exit(EXIT_FAILURE);
+					}
+				}
 				break;
 			}
 			case '\t': // fall through to space
@@ -101,15 +118,21 @@ process ** parse(char * readbuf)
 			{
 				if (strpbrk(delims, previous_delim) == NULL)
 				{
-					proc_args++;
-					p->argv = realloc(proc_args * sizeof(char *));
+					proc_args_index++;
+					p->argv = realloc(p->argv, proc_args_index * sizeof(char *));
+					if (!(p->argv))
+					{
+						perror("realloc");
+					}
+
 					char * arg = malloc(end_ptr - start_ptr);
-					p->argv[proc_args] = arg;
+					strncpy(arg, start_ptr, end_ptr	- start_ptr);
+					p->argv[proc_args_index - 1] = arg;
 				}
 				break;
 			}
 		}
-		
+
 		start_ptr = end_ptr;
 		end_ptr = strpbrk(start_ptr, delims);
 		previous_delim = delim;
