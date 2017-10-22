@@ -2,6 +2,7 @@
 #define STRUCTS
 
 #include <stdbool.h>
+#include <sys/types.h>
 
 // implements a linked list of processes
 typedef struct process
