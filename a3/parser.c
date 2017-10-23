@@ -7,7 +7,7 @@
 
 #include "datastructures.h"
 
-const char const * delims = "<|>;& \t";
+const char const * delims = "<|>;& \t\n";
 size_t num_procs = 4;
 size_t num_args = 4;
 
@@ -125,6 +125,7 @@ process ** parse(char * readbuf)
 				break;
 			}
 			case '\t': // fall through to space
+			case '\n':
 			case ' ':  // space
 			{
 				proc_args_index++;

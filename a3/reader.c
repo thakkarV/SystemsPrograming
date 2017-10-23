@@ -17,12 +17,12 @@ char * read_input(bool * termiante)
 
 		if (c == '\n' || c == EOF)
 		{
-			readbuf[index] = '\0';
+			readbuf[index] = '\n';
 
 			if (c == EOF)
 				*termiante = true;
 
-			return readbuf;
+			break;
 		}
 		else
 		{
@@ -42,4 +42,7 @@ char * read_input(bool * termiante)
 			}
 		}
 	}
+
+	readbuf[index + 1] = '\0';
+	return readbuf;
 }

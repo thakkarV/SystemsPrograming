@@ -32,7 +32,8 @@ int main(int argc, char const * argv [])
 		{
 			printf("process args are the following : ");
 			char * arg;
-			while (arg = *(p->argv++))
+			int counter = 0;
+			while (arg = (p->argv[counter++]))
 			{
 				printf("%s ", arg);
 			}
