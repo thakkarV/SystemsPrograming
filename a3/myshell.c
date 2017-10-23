@@ -31,11 +31,12 @@ int main(int argc, char const * argv [])
 		while (p = *exec_list++)
 		{
 			printf("process args are the following : ");
-			while (p->argv++)
+			char * arg;
+			while (arg = *(p->argv++))
 			{
-				printf(p->*argv);
+				printf("%s ", arg);
 			}
-			printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->stderr);
+			printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->f_stderr);
 		}
 
 		// execute
