@@ -161,7 +161,7 @@ void init_proc(process * p)
 {
 	p->argv = NULL;
 	p->next = NULL;
-	p->pid_t = -1;
+	p->pid = -1;
 	p->is_completed = false;
 	p->is_background = false;
 	p->status = -1;
