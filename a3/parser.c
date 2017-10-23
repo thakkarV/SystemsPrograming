@@ -19,7 +19,7 @@ process ** parse(char * readbuf)
 	process * p_next = NULL;
 	int proc_index = 0;
 	int proc_args_index = 0;
-	char ** args = malloc(num_args * sizeof(char *));
+
 
 	char * start_ptr = readbuf;
 	char * end_ptr = strpbrk(start_ptr, delims);
@@ -128,17 +128,19 @@ process ** parse(char * readbuf)
 			case '\n':
 			case ' ':  // space
 			{
-				proc_args_index++;
-				p->argv = realloc(p->argv, proc_args_index * sizeof(char *));
-				if (!(p->argv))
-				{
-					perror("realloc");
-				}
-
 				char * arg = malloc(end_ptr - start_ptr);
 				strncpy(arg, start_ptr, end_ptr	- start_ptr);
-				p->argv[proc_args_index - 1] = arg;
+				p->argv[proc_args_index++] = arg;
 
+				if (proc_args_index >= num_args)
+				{
+					num_args += num_args;
+					p->argv = realloc(p->argv, num_args * sizeof(char *));
+					if (!(p->argv))
+					{
+						perror("realloc");
+					}
+				}
 				break;
 			}
 		}
@@ -158,7 +160,7 @@ process ** parse(char * readbuf)
 // initializes all default fields for the process struct
 void init_proc(process * p)
 {
-	p->argv = NULL;
+	p->argv = malloc(num_args * sizeof(char *));
 	p->next = NULL;
 	p->pid = -1;
 	p->is_completed = false;
