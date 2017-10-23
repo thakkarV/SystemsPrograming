@@ -144,7 +144,7 @@ process ** parse(char * readbuf)
 			}
 		}
 
-		start_ptr = end_ptr;
+		start_ptr = end_ptr + 1;
 		end_ptr = strpbrk(start_ptr, delims);
 		previous_delim = delim;
 	}
