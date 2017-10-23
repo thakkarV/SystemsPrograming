@@ -10,13 +10,13 @@ typedef struct process
 	char ** argv;
 	struct process * next; // the next process after this one
 	pid_t pid;             // PID of this process
-	bool completed;        // true if completed execution, flase if not
+	bool is_completed;        // true if completed execution, flase if not
 	bool is_background;    // true if put into background, false if not
 	int status;            // return status from this process, once it has exited
 	char * f_stdin;        // filename for redirection of standard in
 	char * f_stdout;       // filename for redirection of standard out
 	char * f_stderr;       // filename for redirection of standard error
-	bool pipe_next;        // true if standard in of next is standard out of this
+	bool is_piped_next;        // true if standard in of next is standard out of this
 } process;
 
 

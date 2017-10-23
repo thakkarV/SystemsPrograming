@@ -27,6 +27,17 @@ int main(int argc, char const * argv [])
 		// parse
 		exec_list = parse(input);
 
+		process * p;
+		while (p = *exec_list++)
+		{
+			printf("process args are the following : ");
+			while (p->argv++)
+			{
+				printf(p->*argv);
+			}
+			printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->stderr);
+		}
+
 		// execute
 		// execute(exec_list);
 

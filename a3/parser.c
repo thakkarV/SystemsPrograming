@@ -105,7 +105,7 @@ process ** parse(char * readbuf)
 			}
 			case '|':  // pipe
 			{
-				p->pipe_next = true;
+				p->is_piped_next = true;
 				procs[proc_index++] = p;
 				p_next = malloc(sizeof(process));
 				init_proc(p_next);
@@ -161,10 +161,12 @@ void init_proc(process * p)
 {
 	p->argv = NULL;
 	p->next = NULL;
-	p->completed = false;
+	p->pid_t = -1;
+	p->is_completed = false;
 	p->is_background = false;
+	p->status = -1;
 	p->f_stdin = NULL;
 	p->f_stdout = NULL;
 	p->f_stderr = NULL;
-	p->pipe_next = false;
+	p->is_piped_next = false;
 }
