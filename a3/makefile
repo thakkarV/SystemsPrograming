@@ -1,28 +1,54 @@
-DEBUG ?= 1
-ifeq (DEBUG, 1)
-	CFLAGS = -g -c
-else
-	CLFAGS = -c
-endif
-
+# Compiler flags
 CC = gcc
-OBJS = myshell.o reader.o parser.o
+CFLAGS = -c
 
-.PHONY: all clean
 
-all : myshell
+# Project files
+SRCS = myshell.c reader.c parser.c
+OBJS = $(SRCS:.c=.o)
+EXE  = myshell
 
-myshell: $(OBJS)
-	$(CC) $(OBJS) -o myshell
+# Debug build settings
+DBGDIR = debug
+DBGEXE = $(DBGDIR)/$(EXE)
+DBGOBJS = $(addprefix $(DBGDIR)/, $(OBJS))
+DBGCFLAGS = -g -O0 -DDEBUG
 
-myshell.o: myshell.c datastructures.h reader.h parser.h
-	$(CC) $(CFLAGS) myshell.c
 
-reader.o: reader.c reader.h
-	$(CC) $(CFLAGS) reader.c
+# Release build settings
+RELDIR = release
+RELEXE = $(RELDIR)/$(EXE)
+RELOBJS = $(addprefix $(RELDIR)/, $(OBJS))
+RELCFLAGS = -O3 -DNDEBUG
 
-parser.o: parser.c parser.h datastructures.h
-	$(CC) $(CFLAGS) parser.c
-	
+.PHONY: all clean debug prep release remake
+
+# Default build
+all: prep release
+
+# Debug rules
+debug: $(DBGEXE)
+
+$(DBGEXE): $(DBGOBJS)
+	$(CC) $(DBGCFLAGS) -o $(DBGEXE) $^
+
+$(DBGDIR)/%.o: %.c
+	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $<
+
+# Release rules
+release: $(RELEXE)
+
+$(RELEXE): $(RELOBJS)
+	$(CC) $(RELCFLAGS) -o $(RELEXE) $^
+
+$(RELDIR)/%.o: %.c
+	$(CC) $(CFLAGS) $(RELCFLAGS) -o $@ $<
+
+# Other rules
+prep:
+	@mkdir -p $(DBGDIR) $(RELDIR)
+
+remake: clean all
+
 clean:
-	rm -rf myshell $(OBJS)
+	rm -f $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS)
