@@ -16,7 +16,6 @@ process ** parse(char * readbuf)
 {
 	process ** procs = malloc(num_procs * sizeof(process *));
 	process * p = malloc(sizeof(process));
-	process * p_next = NULL;
 	int proc_index = 0;
 	int proc_args_index = 0;
 
@@ -35,10 +34,11 @@ process ** parse(char * readbuf)
 			case ';': // new cmd
 			{
 				procs[proc_index++] = p;
-				p_next = malloc(sizeof(process));
+				process * p_next = malloc(sizeof(process));
 				init_proc(p_next);
 				p->next = p_next;
 				p = p_next;
+				proc_args_index = 0; // reset args counter
 
 				if (proc_index >= num_procs)
 				{

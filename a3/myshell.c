@@ -33,7 +33,7 @@ int main(int argc, char const * argv [])
 		{
 			while ((p = exec_list[proc_counter++]) != NULL)
 			{
-				printf("process args are the following : ");
+				printf("process args are the following :\n");
 				char * arg;
 				int arg_counter = 0;
 				while (arg = (p->argv[arg_counter++]))
