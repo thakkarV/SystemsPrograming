@@ -30,7 +30,7 @@ int main(int argc, char const * argv [])
 		process * p;
 		if ( (p = *exec_list) != NULL)
 		{
-			while (p = *exec_list++)
+			while (p++)
 			{
 				printf("process args are the following : ");
 				char * arg;
