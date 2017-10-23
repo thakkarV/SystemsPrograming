@@ -28,14 +28,15 @@ int main(int argc, char const * argv [])
 		exec_list = parse(input);
 
 		process * p;
-		if ( (p = *exec_list) != NULL)
+		int proc_counter = 0;
+		if ((p = exec_list[proc_counter]) != NULL)
 		{
-			while (p++)
+			while ((p = exec_list[proc_counter++]) != NULL)
 			{
 				printf("process args are the following : ");
 				char * arg;
-				int counter = 0;
-				while (arg = (p->argv[counter++]))
+				int arg_counter = 0;
+				while (arg = (p->argv[arg_counter++]))
 				{
 					printf("%s\n", arg);
 				}
