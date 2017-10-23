@@ -22,7 +22,7 @@ int main(int argc, char const * argv [])
 
 		// read
 		input = read_input(&terminate);
-		printf(input);
+		printf("%s\n", input);
 
 		// parse
 		exec_list = parse(input);

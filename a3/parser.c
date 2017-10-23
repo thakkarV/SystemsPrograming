@@ -127,19 +127,17 @@ process ** parse(char * readbuf)
 			case '\t': // fall through to space
 			case ' ':  // space
 			{
-				if (strpbrk(delims, &previous_delim) == NULL)
+				proc_args_index++;
+				p->argv = realloc(p->argv, proc_args_index * sizeof(char *));
+				if (!(p->argv))
 				{
-					proc_args_index++;
-					p->argv = realloc(p->argv, proc_args_index * sizeof(char *));
-					if (!(p->argv))
-					{
-						perror("realloc");
-					}
-
-					char * arg = malloc(end_ptr - start_ptr);
-					strncpy(arg, start_ptr, end_ptr	- start_ptr);
-					p->argv[proc_args_index - 1] = arg;
+					perror("realloc");
 				}
+
+				char * arg = malloc(end_ptr - start_ptr);
+				strncpy(arg, start_ptr, end_ptr	- start_ptr);
+				p->argv[proc_args_index - 1] = arg;
+
 				break;
 			}
 		}
