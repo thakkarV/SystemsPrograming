@@ -107,7 +107,7 @@ process ** parse(char * readbuf)
 			{
 				p->is_piped_next = true;
 				procs[proc_index++] = p;
-				p_next = malloc(sizeof(process));
+				process * p_next = malloc(sizeof(process));
 				init_proc(p_next);
 				p->next = p_next;
 				p = p_next;
