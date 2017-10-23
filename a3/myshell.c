@@ -33,8 +33,9 @@ int main(int argc, char const * argv [])
 			while (p = *exec_list++)
 			{
 				printf("process args are the following : ");
-				char * arg = p->argv[0];
-				while (arg++)
+				char * arg;
+				int counter = 0;
+				while (arg = (p->argv[counter++]))
 				{
 					printf("%s\n", arg);
 				}
@@ -42,6 +43,8 @@ int main(int argc, char const * argv [])
 			}
 		}
 		
+
+
 		// execute
 		// execute(exec_list);
 
