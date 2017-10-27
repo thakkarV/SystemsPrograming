@@ -29,19 +29,16 @@ int main(int argc, char const * argv [])
 
 		process * p;
 		int proc_counter = 0;
-		if ((p = exec_list[proc_counter]) != NULL)
+		while ((p = exec_list[proc_counter++]) != NULL)
 		{
-			while ((p = exec_list[proc_counter++]) != NULL)
+			printf("process args are the following :\n");
+			char * arg;
+			int arg_counter = 0;
+			while (arg = (p->argv[arg_counter++]))
 			{
-				printf("process args are the following :\n");
-				char * arg;
-				int arg_counter = 0;
-				while (arg = (p->argv[arg_counter++]))
-				{
-					printf("%s\n", arg);
-				}
-				printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->f_stderr);
+				printf("%s\n", arg);
 			}
+			printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->f_stderr);
 		}
 		
 
@@ -51,7 +48,7 @@ int main(int argc, char const * argv [])
 
 		// free up memory
 		free(input);
-		free(exec_list);
+		dealloc_exec_list(exec_list);
 	}
 	
 	return EXIT_SUCCESS;

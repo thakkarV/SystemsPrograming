@@ -128,6 +128,9 @@ process ** parse(char * readbuf)
 			case '\n':
 			case ' ':  // space
 			{
+				if (*(end_ptr - 1) == ' ' || *(end_ptr - 1) == '\t')
+					break;
+
 				char * arg = malloc(end_ptr - start_ptr);
 				strncpy(arg, start_ptr, end_ptr	- start_ptr);
 				p->argv[proc_args_index++] = arg;
@@ -170,4 +173,25 @@ void init_proc(process * p)
 	p->f_stdout = NULL;
 	p->f_stderr = NULL;
 	p->is_piped_next = false;
+}
+
+// deallocates all the resources of a process struct
+void dealloc_exec_list(process ** exec_list)
+{
+	process * p;
+	int proc_counter = 0;
+	while ((p = exec_list[proc_counter++]) != NULL)
+	{
+		char * arg;
+		int arg_counter = 0;
+		while (arg = (p->argv[arg_counter++]))
+		{
+			free(arg);
+		}
+		free(p->argv);
+		free(f_stdin);
+		free(f_stdout);
+		free(f_stderr);
+		free(p);
+	}
 }
