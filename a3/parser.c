@@ -189,9 +189,9 @@ void dealloc_exec_list(process ** exec_list)
 			free(arg);
 		}
 		free(p->argv);
-		free(f_stdin);
-		free(f_stdout);
-		free(f_stderr);
+		free(p->f_stdin);
+		free(p->f_stdout);
+		free(p->f_stderr);
 		free(p);
 	}
 }
