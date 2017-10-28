@@ -6,8 +6,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+extern int num_args;
+int default_num_commands = 2;
+int default_num_tokens = 2;
+
 process ** parse(char * readbuf);
-void init_proc(process * p);
-void dealloc_exec_list(process ** exec_list);
+char ** tokenize(char * command);
+
 
 #endif // PARSER

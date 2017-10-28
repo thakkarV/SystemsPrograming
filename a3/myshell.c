@@ -7,6 +7,8 @@
 #include "parser.h"
 #include "datastructures.h"
 
+
+
 int main(int argc, char const * argv [])
 {
 	char * input; // the line read from the terminal to be parsed and execed
@@ -14,7 +16,7 @@ int main(int argc, char const * argv [])
 	bool terminate = false; // true if shell should exit
 
 	// ideally we want to load this form a config file
-	const char * prompt = "myshell$> ";
+	prompt();
 
 	while (!terminate)
 	{
@@ -40,7 +42,6 @@ int main(int argc, char const * argv [])
 			}
 			printf("\nStdin is %s, stdout is %s, stderr is %s\n", p->f_stdin, p->f_stdout, p->f_stderr);
 		}
-		
 
 
 		// execute

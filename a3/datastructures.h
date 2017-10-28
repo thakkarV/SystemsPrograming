@@ -19,6 +19,11 @@ typedef struct process
 	bool is_piped_next;        // true if standard in of next is standard out of this
 } process;
 
+// init method fora proc struct
+void init_proc(process * p);
+
+// deallocates an array of procs
+void dealloc_exec_list(process ** exec_list);
 
 // TODO: double linked list of input commands from the user for enabling command history using up/down arrows
 typedef struct input
