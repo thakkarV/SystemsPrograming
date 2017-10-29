@@ -9,7 +9,7 @@ char * read_input(bool * termiante)
 	int buf_size = 512;
 	char c;
 	int index = 0;
-	char * readbuf = malloc(sizeof(char) * buf_size);
+	char * readbuf = calloc(buf_size, sizeof(char));
 
 	while(true)
 	{
@@ -17,7 +17,6 @@ char * read_input(bool * termiante)
 
 		if (c == '\n' || c == EOF)
 		{
-			readbuf[index] = '\n';
 
 			if (c == EOF)
 				*termiante = true;

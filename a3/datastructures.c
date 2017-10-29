@@ -1,9 +1,13 @@
 #include "datastructures.h"
 
+#include <stdlib.h>
+
+int default_num_args = 4;
+
 // initializes all default fields for the process struct
 void init_proc(process * p)
 {
-	p->argv = malloc(num_args * sizeof(char *));
+	p->argv = calloc(default_num_args, sizeof(char *));
 	p->next = NULL;
 	p->pid = -1;
 	p->is_completed = false;
@@ -24,14 +28,13 @@ void dealloc_exec_list(process ** exec_list)
 	{
 		char * arg;
 		int arg_counter = 0;
-		while (arg = (p->argv[arg_counter++]))
-		{
-			free(arg);
-		}
 		free(p->argv);
-		free(p->f_stdin);
-		free(p->f_stdout);
-		free(p->f_stderr);
+		if (!(p->f_stdin))
+			free(p->f_stdin);
+		if (!(p->f_stdout))
+			free(p->f_stdout);
+		if (!(p->f_stderr))
+			free(p->f_stderr);
 		free(p);
 	}
 }

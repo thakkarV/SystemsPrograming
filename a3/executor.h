@@ -1,7 +1,8 @@
 #ifndef EXECUTOR
 #define EXECUTOR
 
-int num_args = 2;
+#include "datastructures.h"
+
 
 void execute(process ** exec_list);
 void prompt(void);

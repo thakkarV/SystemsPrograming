@@ -1,1 +1,1 @@
-grep test < output.txt
+grep ping < output.txt

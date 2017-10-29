@@ -1,10 +1,10 @@
 # Compiler flags
 CC = gcc
-CFLAGS = -c
+CFLAGS = -c -std=c99
 
 
 # Project files
-SRCS = myshell.c reader.c parser.c
+SRCS = myshell.c reader.c parser.c executor.c datastructures.c
 OBJS = $(SRCS:.c=.o)
 EXE  = myshell
 
@@ -17,7 +17,7 @@ DBGCFLAGS = -g -O0 -DDEBUG
 
 # Release build settings
 RELDIR = release
-RELEXE = $(RELDIR)/$(EXE)
+RELEXE = $(EXE)
 RELOBJS = $(addprefix $(RELDIR)/, $(OBJS))
 RELCFLAGS = -O3 -DNDEBUG
 
