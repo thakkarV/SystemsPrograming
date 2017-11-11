@@ -1,2 +1,0 @@
-ls: unrecognized option '--blah'
-Try 'ls --help' for more information.

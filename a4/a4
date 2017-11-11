@@ -1,0 +1,109 @@
+ 
+CS 410	
+Systems Programming
+Instructor: Eric Missimer 
+Assignment 4
+Note: Please follow the assignment guidelines carefully and submit exactly the information that is required. Anyone who fails to submit files in the correct format (i.e., adhering to name conventions etc) will not be graded.
+Purpose
+
+The purpose of this assignment is to become familiar with the primitives used in process control and inter-process communication. You may utilize source code from the course text book, as necessary.
+Idea
+
+Your goal is to simulate a multi-threaded, multi-process environment that implements interprocess communication, signal handling, and a strong understanding of flow control. The basic problem centers around a parallel implementation of matrix multiplication, described below. 
+
+In order to successfully complete the assignment, you will have to implement certain concepts, including interprocess communication (i.e., pipes, shared memory and signals), process creation and execution. Relevant functions include: getcontext/makecontext/setcontext/swapcontext, sigsetjmp/siglongjmp, kill, pipe, shmget,shmctl,shmat,fork,exec etc.
+This assignment will require a thorough understanding of how a system functions, and so it is to your benefit to truly think about the model that follows before you start to code (ie. good planning will definitely pay off).
+
+The Problem
+
+In the project, you are required to build a integrated "UNIX" like computing environment for a parallel implementation of matrix multiplication. You need to write three programs (with one of these programs being a BONUS).
+
+A multi-process version of matrix multiplication, named "matmult_p". Here is the detailed specification of matmult_p.
+A multi-threaded version of matrix multiplication, named "matmult_t". Here is the detailed specification of matmult_t. BONUS points will be given to a more portable mutithreading solution that does not require SYSV context functions. Similarly, any solution that binds user-level threads onto kernel threads will be given extra credit. NB: You CANNOT use pthreads or any similar library for this part of the project.
+A formatter which "formats" a matrix, named "matformatter". In this project, "matformatter" will output the transpose of the input matrix.
+BONUS: Your own locks.
+To Test Your Program
+
+You should test your computing environment, comprising the three programs outlined above, as follows:
+
+run "matmult_p < input_matrix | matformatter > output_matrix_p". The meaning of this command is that process "matmult_p" takes input from file "input_matrix" 
+and pipes its output to a "matformatter" process that writes to an output file called "output_matrix_p".
+"matmult_p" computes the multiplication of two matrices stored in "input_matrix" and writes the result to stdout. The result is "piped" to stdin of "matformatter", which first calculates the transpose of its input and then writes the result to stdout. This result is further redirected to the file "output_matrix_p".
+run "matmult_t < input_matrix | matformatter > output_matrix_t". In this test case, the meaning of the command line is same as the last one, except that you use the multi-threaded version of matrix multiplication.
+An example input_matrix can be found here.
+Submission
+
+All source code and a Makefile should be gsubmitted to a4/. Make sure you include a README file to explain the features and limitations of your solution.
+
+
+===================================================================================================================================
+
+
+Multi-Process Parallel Matrix Multiplication
+
+Problem
+
+The problem to be addressed is a parallel implementation of matrix multiplication on two arbitrary-sized matrices, A and B. Your main program (called "matmult_p") is to be invoked as follows:
+$ matmult_p
+
+It then reads two matrix for multiplicastion from stdin. You can assume that first matrix is an m*n matrix( i.e., m rows and n columns) where each value, A[i,j], is an integer. Likewise, the second matrix contains an n*p matrix of integers for each element B[i,j]. Each line from stdin will hold one row of a matrix. The two matrices are separated by one blank line. The values of m, n and p can be arbitrary, but you must check the two input matrices to make sure they can be multiplied correctly. That is, there must be n columns in A and n rows in B.
+
+The output of "matmult_p is an m*p matrix, with m lines each containing a row of the final matrix. This matrix is to be written to stdout.
+
+The Big Picture
+1. The first step is for the parent process to read two matrices from stdin, and perform appropriate error checks, to verify the correctness of the matrices.
+
+2. The parent process then creates a shared memory segment which is big enough for communications between parent and child processes. Using the "fork" syscall, the parent creates m*p child processes.
+
+3. A child process uses one of the exec functions to map a program file called "multiply" into its address space.
+
+4. The "multiply" program will take row i of A and column k of B, and sum the product of the n entries in each vector. It then writes the sum C[i,k] to the correct position in the shared memory, for the parent process to collect the result at a later time.
+
+5. The parent process waits until all of the child processes have finished, and then outputs the resultant matrix to stdout.
+
+ 
+===================================================================================================================================
+
+
+Multi-Thread Parallel Matrix Multiplication
+
+Problem
+
+The problem to be addressed is the same as in "matmult_p", except you will use multiple threads to multiply matrices instead of separate child processes. Your multi-threaded program should be called "matmult_t".
+The Big Picture
+The first step is for "matmult_t" to read two matrices from stdin, and perform appropriate error checks, to verify the correctness of the matrices.
+Once the "matmult_t" program has read the input matrices, it will create a series of threads to help itself calculate the matrix multiplication. To create threads, you cannot use any supporting libraries for thread creation. Instead, you must write a function called my_thr_create(), as follows:
+void my_thr_create(void (*func) (int), int thr_id);
+
+The first argument is a pointer to a function for the thread to execute, while the second argument is a unique integer thread ID that you create for each new thread. NOTE: To establish the concept of a thread, you will need to establish a "ucontext_t" for each thread having a given ID, so that you can use setcontext/swapcontext to save/restore each thread's state. You may also use (sig)setjmp/(sig)longjmp/sigaltstack to implement the functionality of the context handling functions, but this is a more difficult task. BONUS POINTS will be given for an implementation using the latter three functions in place of the context-based functions.
+Since the main thread and all sub-threads share the process memory space, the thread corresponding to C[i,k] will simply get row i of A and column k of B from the global process memory space, and then put the sum of the product of the n entries in each vector in a designated global memory location. 
+When all sub-threads have finished their calculations, the main thread will then output the resultant matrix to stdout.
+Hints
+
+To create your threads you will need to understand how context control works. This is documented in the GNU document on System V contexts. 
+
+A more portable approach to implementing threads, that requires only setjmp/longjmp and sigaltstack is documented in:  
+R. Engelschall, "Portable Multithreading: the Signal Stack Trick for User-Space Thread Creation", in Proceedings of the USENIX Annual Technical Conference, 2000. If you can implement your threads using this technique you'll be given extra credit. 
+
+
+===================================================================================================================================
+
+
+Locks
+
+A Basic Threading Library
+
+For this assignment you are going to be creating a threading library. You are not allowed to use algorithms such as Peterson's algorithm or anything of that ilk (it will be discussed in class why, see peterson.c). You should use something such as compare and swap, there are some gcc built-ins you will want to look at.
+
+For your threading library you are first going to create an initialize_lock, lock and unlock function. All functionality should be in lock.c and the function prototypes and structs should be in lock.h. The function prototypes are the following:
+
+void initialize_lock(struct my_lock *lock) - initializes the lock data structure, what this does exactly is up to you but after this function is called on a lock you should be able to lock it.
+void lock(struct my_lock *lock) - Grabs the lock. When this function returns the caller has exclusive access to the lock.
+void unlock(struct my_lock *lock) - Releases the lock.
+Fairer Locks
+
+The most basic lock implementation suffers from a starvation problem. Specifically, consider the following scenario. You have three threads, "A", "B" and "C". Thread "A" grabs a lock and then "B" and "C" try to grab the same lock. "A" releases the lock letting "B" proceed. "A" then immediately tries to grab the lock again. When "B" releases the lock "A" obtains the lock and eventually "B" tries to grab the lock before "A" releases the lock. This pattern can repeat indefinitely and "C" could never grab the lock. Modify your lock and unlock to solve this issue. To simplify things you will be passing a zero-based index that is basically your thread ID for the lock. So in the scenario above "A" would have ID 0, "B" would have ID 1 and "C" would have ID 2. Note that these are not the thread IDs reported by Linux. You are basically going to be giving each thread your own ID for it.
+
+void initialize_bounded_waitlock(struct my_bw_lock *lock, int num_threads) - initializes the lock data structure, what this does exactly is up to you but after this function is called on a lock you should be able to lock it. The second argument is the maximum number of unique threads that will try to grab this lock.
+void bounded_wait_lock(struct my_bw_lock *lock, int thread_id) - Grabs the lock. When this function returns the caller has exclusive access to the lock. The second argument is your thread_id for the lock.
+void bounded_wait_unlock(struct my_bw_lock *lock, int thread_id) - Releases the lock. The second argument is your thread_id for the lock, this should be the same as the id passed into bounded_wait_lock for your thread.
