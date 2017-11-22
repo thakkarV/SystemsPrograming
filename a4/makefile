@@ -6,7 +6,7 @@ CFLAGS = -c -std=c99
 # Project files
 SRCS = matmult_p.c reader.c printer.c
 OBJS = $(SRCS:.c=.o)
-EXE  = myshell
+EXE  = matmult_p
 
 # Debug build settings
 DBGDIR = debug
