@@ -4,7 +4,7 @@ CFLAGS = -c -std=c99
 
 
 # Project files
-SRCS = matmult_p.c reader.c printer.c datastructures.c
+SRCS = matmult_p.c reader.c printer.c
 OBJS = $(SRCS:.c=.o)
 EXE  = myshell
 
