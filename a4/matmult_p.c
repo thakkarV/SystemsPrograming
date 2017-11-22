@@ -12,7 +12,7 @@ int main(int argc, char const * argv [])
 
 	if (lhs-> num_cols != rhs-> num_rows)
 	{
-		printf("Number of columns of the left matrix must match the number of rows of the right matrix.\n")
+		printf("Number of columns of the left matrix must match the number of rows of the right matrix.\n");
 		return EXIT_FAILURE;
 	}
 
@@ -24,5 +24,5 @@ int main(int argc, char const * argv [])
 	printf("RHS Matrix :\n");
 	print_matrix(rhs);
 
-	return EXIT_SUCESS;
+	return EXIT_SUCCESS;
 }
