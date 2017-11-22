@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "datastructures.h"
 #include "reader.h"
@@ -17,7 +18,11 @@ int main(int argc, char const * argv [])
 
 	int num_procs = lhs-> num_rows * rhs-> num_cols;
 
-
+	printf("LHS Matrix :\n");
+	print_matrix(lhs);
+	printf("\n\n");
+	printf("RHS Matrix :\n");
+	print_matrix(rhs);
 
 	return EXIT_SUCESS;
 }

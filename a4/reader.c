@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <cstdlib.h>
+#include <stdlib.h>
 #include "datastructures.h"
 
 #define BUF_SIZE 8192
