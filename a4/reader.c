@@ -78,7 +78,7 @@ matrix * get_matrix(void)
 
 		if (col_counter + 1 != mat-> num_cols)
 		{
-			printf(stderr, "Input matrix has different number of elements per row.");
+			fprintf(stderr, "Input matrix has different number of elements per row.\n");
 			exit(1);
 		}
 
@@ -90,7 +90,7 @@ matrix * get_matrix(void)
 		{
 			curr_max_rows *= 2;
 			mat->elements = realloc(mat-> elements, curr_max_rows);
-			if (! max-> elements)
+			if (!mat-> elements)
 			{
 				perror("realloc");
 			}
