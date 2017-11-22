@@ -6,7 +6,7 @@ void print_matrix(const matrix * in_mat)
 	{
 		for (int col_counter = 0; col_counter < in_mat-> num_cols; col_counter++)
 		{
-			printf("%3d ", in_mat-> elements[row_counter][col_counter])
+			printf("%3d ", in_mat-> elements[row_counter][col_counter]);
 		}
 		printf("\n");
 	}
