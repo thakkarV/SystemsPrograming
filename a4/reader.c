@@ -27,9 +27,13 @@ matrix * get_matrix(void)
 	// first get only on row, count num cols using that
 	row = malloc(curr_max_cols * sizeof(int));
 	fgets(buf, BUF_SIZE, stdin);
+	token = strtok(buf, " ");
 	while (token != NULL)
 	{
 		entry = strtol(token, NULL, 10);
+		printf("Token = %s\n", token);
+		printf("Entry = %d\n", entry);
+		printf("Col counter = %d\n", col_counter);
 		row[col_counter] = entry;
 		col_counter++;
 		// expand row if needed
@@ -40,21 +44,28 @@ matrix * get_matrix(void)
 			if (!row)
 			{
 				perror("realloc");
+				exit(1);
 			}
 		}
 
 		token = strtok(NULL, " ");
 	}
 
-	mat-> num_cols = col_counter + 1;
-	row_counter++;
+
+	mat-> num_cols = col_counter;
+	printf("Cols at end of init loop = %d\n", mat-> num_cols);
+	mat-> elements[row_counter++] = row;
 
 	// now get rest of the rows one by one while checking nun_cols
 	while(fgets(buf, BUF_SIZE, stdin) != NULL)
 	{
+		if (buf[0] == '\n')
+			break;
+
+		token = strtok(buf, " ");
+
 		// one empty row
 		row = malloc(curr_max_cols * sizeof(int));
-		token = strtok(buf, " ");
 
 		col_counter = 0;
 		while (token != NULL)
@@ -70,13 +81,14 @@ matrix * get_matrix(void)
 				if (!row)
 				{
 					perror("realloc");
+					exit(1);
 				}
 			}
 
 			token = strtok(NULL, " ");
 		}
 
-		if (col_counter + 1 != mat-> num_cols)
+		if (col_counter != mat-> num_cols)
 		{
 			fprintf(stderr, "Input matrix has different number of elements per row.\n");
 			exit(1);
@@ -97,6 +109,6 @@ matrix * get_matrix(void)
 		}
 	}
 
-	mat-> num_rows = row_counter + 1;
+	mat-> num_rows = row_counter;
 	return mat;
 }
