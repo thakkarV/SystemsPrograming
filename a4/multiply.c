@@ -50,8 +50,6 @@ int main(int argc, char const * argv[])
 	// output
 	*output_loc = output;
 
-	printf("Index %d value = %d\n", counter, output);
-
 	// detach
 	if (shmdt(shmaddr) < 0)
 	{

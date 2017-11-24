@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "datastructures.h"
+#include "reader.h"
 #include "printer.h"
-
 
 int main(int argc, char const * argv [])
 {

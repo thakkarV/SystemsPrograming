@@ -8,10 +8,10 @@ OBJS_MTP = $(SRCS_MTP:.c=.o)
 EXE_MTP  = matmult_p
 
 SRCS_MUL = multiply.c
-OBJS_MUL = $(SRCS_MTP:.c=.o)
+OBJS_MUL = $(SRCS_MUL:.c=.o)
 EXE_MUL = multiply
 
-SRCS_FMT = matformatter.c printer.c
+SRCS_FMT = matformatter.c printer.c reader.c
 OBJS_FMT = $(SRCS_FMT:.c=.o)
 EXE_FMT = matformatter
 
@@ -26,19 +26,20 @@ DBGOBJS = $(addprefix $(DBGDIR)/, $(OBJS_ALL))
 DBGCFLAGS = -g -O0 -DDEBUG
 
 # Release build settings
-RELDIR = release
 RELEXE_MTP = $(EXE_MTP)
 RELEXE_MUL = $(EXE_MUL)
 RELEXE_FMT = $(EXE_FMT)
-RELOBJS = $(addprefix $(RELDIR)/, $(OBJS_ALL))
+RELOBJS = $(OBJS_ALL)
 RELCFLAGS = -O3 -DNDEBUG
 
-.PHONY: all clean debug prep release remake
+.PHONY: all clean debug release remake
 
-# Default build
+# default build
 all: debug release
 
-# Debug rules
+###
+### Debug rules
+###
 debug: $(DBGEXE_MTP) $(DBGEXE_MUL) $(DBGEXE_FMT)
 
 $(DBGEXE_MTP): $(OBJS_MTP)
@@ -53,7 +54,9 @@ $(DBGEXE_FMT): $(OBJS_FMT)
 $(DBGDIR)/%.o: %.c
 	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $<
 
-# Release rules
+###
+### Release rules
+###
 release: $(RELEXE_MTP) $(RELEXE_MUL) $(RELEXE_FMT)
 
 $(RELEXE_MTP): $(OBJS_MTP)
@@ -67,10 +70,6 @@ $(RELEXE_FMT): $(OBJS_FMT)
 
 $(RELDIR)/%.o: %.c
 	$(CC) $(CFLAGS) $(RELCFLAGS) -o $@ $<
-
-# Other rules
-prep:
-	@mkdir -p $(DBGDIR) $(RELDIR)
 
 remake: clean all
 
