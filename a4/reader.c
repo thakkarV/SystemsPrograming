@@ -31,9 +31,6 @@ matrix * get_matrix(void)
 	while (token != NULL)
 	{
 		entry = strtol(token, NULL, 10);
-		printf("Token = %s\n", token);
-		printf("Entry = %d\n", entry);
-		printf("Col counter = %d\n", col_counter);
 		row[col_counter] = entry;
 		col_counter++;
 		// expand row if needed
@@ -53,7 +50,6 @@ matrix * get_matrix(void)
 
 
 	mat-> num_cols = col_counter;
-	printf("Cols at end of init loop = %d\n", mat-> num_cols);
 	mat-> elements[row_counter++] = row;
 
 	// now get rest of the rows one by one while checking nun_cols
