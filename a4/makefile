@@ -52,6 +52,9 @@ all: debug release
 ###
 debug: $(DBGEXE_MMP) $(DBGEXE_MUL) $(DBGEXE_FMT) $(DBGEXE_MMT)
 
+$(DBGDIR)/%.o: %.c
+	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $<
+
 $(DBGEXE_MMP): $(DBGOBJS_MMP)
 	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMP) $(DBGOBJS_MMP)
 
@@ -64,8 +67,6 @@ $(DBGEXE_FMT): $(DBGOBJS_FMT)
 $(DBGEXE_MMT): $(DBGOBJS_MMT)
 	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMT) $(DBGOBJS_MMT)
 
-$(DBGDIR)/%.o: %.c
-	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $<
 
 ###
 ### Release rules

@@ -1,6 +1,6 @@
 # Assignment 4 - IPC and User Space Threading
 
-## Makefile
+## Build
 This project required some more serious makefile kung fu. The makefile builds all the 
 four required programs for the submission. ./matmult_p is the main for multi-process
 matrix multiplication, which fork and execs many ./multiply binaries, each one responsible
@@ -23,10 +23,9 @@ All of this results in an API that does not require the user to write their code
 4. Preemption for user space threading
 
 ## What is not working
-Multi threaded part sometimes works and sometimes does not. The issues are mainly regarding
-the signal handling. Sometimes the handler is registered succesfully, but other times,
-it neither causes a perror to trigger, nor does it catch the SIGALRM. I have not been able to
-figure out why this happens. Preemption seems to be working when it does.
+Multi threaded part sometimes works and sometimes does not. This only happend on some compsuters. The issues are mainly regarding the signal handling. Sometimes the handler is registered succesfully, but other times, it neither causes a perror to trigger, nor does it catch the SIGALRM. I have not been able to figure out why this happens. Preemption seems to be working when it does.
 
 As a result of this issue, sometimes ./matmul_t needs to be just re-run (without even recompiling)
-once or twice before it outputs the matrix, rather than just "Alarm Clock". What I think the issue is that sometimes the next sigalarm gets called not during a thread, but at some other point, like schedule or context swap, which causes this behaviour. I have increased the alarm time up to 50000 microseconds for now, and that seems to make it work consistently.
+once or twice before it outputs the matrix, rather than just "Alarm Clock". I have increased the alarm time up to 50000 microseconds for now, and that seems to make it work consistently.
+
+Update: This is not a problme on the CSA VMs for some reason, only on the Eng-Grid, which also run Cent-OS.

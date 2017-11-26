@@ -1,12 +1,11 @@
 #ifndef LOCK
 #define LOCK
 
-#include <stdbool.h>
+#include <stdlib.h>
 
 struct my_lock
 {
-	bool is_taken;
-	int 
+	int * is_taken;
 };
 
 void initialize_lock(struct my_lock * lock);
