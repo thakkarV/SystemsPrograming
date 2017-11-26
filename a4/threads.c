@@ -5,8 +5,6 @@ task * current;
 ucontext_t * exit_context;
 ucontext_t * main_context;
 
-// 4 kib stack per thread
-#define STACK_SIZE 4096
 
 void my_thr_create(void (*func) (int), int tid)
 {
@@ -21,6 +19,7 @@ void my_thr_create(void (*func) (int), int tid)
 	makecontext(&(thread-> context), (void (*) (void)) thread_runner, 2, func, tid);
 	add_task(thread);
 }
+
 
 void start_threads(void)
 {
@@ -38,11 +37,12 @@ void start_threads(void)
 		perror("sigaction");
 
 	current = task_list;
-
+	
 	// store context of main
 	main_context = malloc(sizeof(ucontext_t));
 
 	// keep scheduling threads until all are done
+	
 	while (task_list)
 	{
 		set_alarm();
@@ -50,18 +50,49 @@ void start_threads(void)
 		schedule();
 	}
 
-	// dealloc all tasks here
+	// restore signal handler before returning control to user
+	alarm(0);
+	if (sigaction(SIGALRM, &default_action, &alarm_action) < 0)
+		perror("sigaction");
 }
+
+
+void thread_runner(void (*func) (int), int tid)
+{
+	// a wraper that allows us to have the user of the threads treat the thread API
+	// as completely opaque
+	// called automatically when a thread's runnable returns
+	// removes the thread form the task list, and schedules the next one
+	sleep(10);
+	func(tid);
+	current-> is_done = true;
+	remove_task(current);
+	setcontext(main_context);
+}
+
 
 void schedule(void)
 {
+	// do some smarter scheduling in the future here
 	current = current-> next;
 }
 
+
 void set_alarm(void)
 {
-	ualarm(5000, 0);
+	ualarm(ALARM_OFFSET, 0);
 }
+
+
+void alarm_handler(int signo)
+{
+	if (swapcontext(&(current-> context), main_context) < 0)
+	{
+		perror("swapcontext");
+		exit(1);
+	}
+}
+
 
 void add_task(task * thread)
 {
@@ -94,25 +125,12 @@ void remove_task(task * thread)
 	}
 	else
 	{
+		current = current-> next;
 		// splice out
 		thread-> previous-> next = thread-> next;
 		thread-> next-> previous = thread-> previous;
+		// dealloc
+		free(thread-> context.uc_stack.ss_sp);
+		// free(thread);
 	}
-}
-
-void alarm_handler(int signo)
-{
-	printf("In Handler\n");
-	swapcontext(&(current-> context), main_context);
-}
-
-void thread_runner(void (*func) (int), int tid)
-{
-	// called automatically when a thread's runnable returns
-	// removes the thread form the task list, and schedules the next one
-	func(tid);
-	sleep(1);
-	current-> is_done = true;
-	remove_task(current);
-	setcontext(main_context);
 }

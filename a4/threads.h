@@ -9,6 +9,9 @@
 #include <stdbool.h>
 #include <ucontext.h>
 
+#define ALARM_OFFSET 50000
+#define ALARM_INTERVAL 50000
+
 typedef struct task
 {
 	ucontext_t context;
