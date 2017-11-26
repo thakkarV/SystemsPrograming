@@ -5,7 +5,7 @@
 
 struct my_lock
 {
-	int * is_taken;
+	int is_taken;
 };
 
 void initialize_lock(struct my_lock * lock);
