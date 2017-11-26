@@ -6,6 +6,8 @@ four required programs for the submission. ./matmult_p is the main for multi-pro
 matrix multiplication, which fork and execs many ./multiply binaries, each one responsible
 for a single cell in the output matrix.
 
+A simple lock implementation is included along with a test file. It is not built by the makefile.
+
 ## Comments on the Threading API implementation
 As far as I possibly can, I have tried to make the threading API as tight and elegant as possible.
 I have not take the liberty of calling schedule at the end of the multiply function. To achieve this,
