@@ -44,11 +44,12 @@ int main(int argc, char const * argv [])
 
 	print_matrix(new_mat);
 
+	// clean up and exit
 	dealloc_matrix(lhs);
 	dealloc_matrix(rhs);
 	dealloc_matrix(new_mat);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 void multiply(int tid)

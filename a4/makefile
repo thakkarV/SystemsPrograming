@@ -5,18 +5,22 @@ CFLAGS = -c
 # Project files
 SRCS_MMP = matmult_p.c reader.c printer.c shmops.c datastructures.c
 OBJS_MMP = $(SRCS_MMP:.c=.o)
+DBGOBJS_MMP = $(addprefix $(DBGDIR)/, $(OBJS_MMP))
 EXE_MMP  = matmult_p
 
 SRCS_MUL = multiply.c
 OBJS_MUL = $(SRCS_MUL:.c=.o)
+DBGOBJS_MUL = $(addprefix $(DBGDIR)/, $(OBJS_MUL))
 EXE_MUL = multiply
 
 SRCS_FMT = matformatter.c printer.c reader.c datastructures.c
 OBJS_FMT = $(SRCS_FMT:.c=.o)
+DBGOBJS_FMT = $(addprefix $(DBGDIR)/, $(OBJS_FMT))
 EXE_FMT = matformatter
 
 SRCS_MMT = matmult_t.c reader.c printer.c threads.c datastructures.c
 OBJS_MMT = $(SRCS_MMT:.c=.o)
+DBGOBJS_MMT = $(addprefix $(DBGDIR)/, $(OBJS_MMT))
 EXE_MMT = matmult_t
 
 OBJS_ALL = $(OBJS_MMP) $(OBJS_MUL) $(OBJS_FMT) $(OBJS_MMT)
@@ -48,17 +52,17 @@ all: debug release
 ###
 debug: $(DBGEXE_MMP) $(DBGEXE_MUL) $(DBGEXE_FMT) $(DBGEXE_MMT)
 
-$(DBGEXE_MMP): $(OBJS_MMP)
-	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMP) $(OBJS_MMP)
+$(DBGEXE_MMP): $(DBGOBJS_MMP)
+	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMP) $(DBGOBJS_MMP)
 
-$(DBGEXE_MUL): $(OBJS_MUL)
-	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MUL) $(OBJS_MUL)
+$(DBGEXE_MUL): $(DBGOBJS_MUL)
+	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MUL) $(DBGOBJS_MUL)
 
-$(DBGEXE_FMT): $(OBJS_FMT)
-	$(CC) $(DBGCFLAGS) -o $(DBGEXE_FMT) $(OBJS_FMT)
+$(DBGEXE_FMT): $(DBGOBJS_FMT)
+	$(CC) $(DBGCFLAGS) -o $(DBGEXE_FMT) $(DBGOBJS_FMT)
 
-$(DBGEXE_MMT): $(OBJS_MMT)
-	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMT) $(OBJS_MMT)
+$(DBGEXE_MMT): $(DBGOBJS_MMT)
+	$(CC) $(DBGCFLAGS) -o $(DBGEXE_MMT) $(DBGOBJS_MMT)
 
 $(DBGDIR)/%.o: %.c
 	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $<

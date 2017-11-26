@@ -47,6 +47,7 @@ void start_threads(void)
 	{
 		set_alarm();
 		swapcontext(main_context, &(current-> context));
+		alarm(0);
 		schedule();
 	}
 
@@ -65,6 +66,7 @@ void thread_runner(void (*func) (int), int tid)
 	// removes the thread form the task list, and schedules the next one
 	sleep(10);
 	func(tid);
+	alarm(0);
 	current-> is_done = true;
 	remove_task(current);
 	setcontext(main_context);

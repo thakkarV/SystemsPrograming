@@ -11,6 +11,8 @@
 
 #define ALARM_OFFSET 50000
 #define ALARM_INTERVAL 50000
+// 4 kib stack per thread
+#define STACK_SIZE 4096
 
 typedef struct task
 {

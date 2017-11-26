@@ -20,8 +20,8 @@ void dealloc_matrix(matrix * mat)
 	int i;
 	for (i = 0; i < mat-> num_rows; i++)
 	{
-		free(mat-> elements[i]);
+		// free(mat-> elements[i]);
 	}
-	free(mat-> elements);
+	// free(mat-> elements);
 	free(mat);
 }
