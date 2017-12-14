@@ -45,7 +45,7 @@ int main(int argc, char const * argv [])
 		exit(1);
 	}
 
-	// serialize
+	// serialize to shared memory
 	shmop_serialize_mat(shmaddr, lhs, 0);
 	shmop_serialize_mat(shmaddr, rhs, lhs_size);
 	int * setupaddr = (int *) shmaddr;
@@ -100,7 +100,7 @@ int main(int argc, char const * argv [])
 		waitpid(child_pids[i], &retval, 0);
 	}
 
-	// deserialise output matrix
+	// deserialise output matrix and print
 	matrix * new_mat = shmop_deserialize_mat(shmaddr, lhs_size + rhs_size);
 	print_matrix(new_mat);
 
@@ -116,6 +116,11 @@ int main(int argc, char const * argv [])
 		perror("shmdt");
 		exit(1);
 	}
+
+	free(child_pids);
+	dealloc_matrix(lhs);
+	dealloc_matrix(rhs);
+	dealloc_matrix(new_mat);
 
 	return EXIT_SUCCESS;
 }

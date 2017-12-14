@@ -18,17 +18,11 @@ void print_matrix(const matrix * in_mat)
 
 matrix * transpose(const matrix * in_mat)
 {
-	matrix * new_mat = malloc(sizeof(matrix));
+	matrix * new_mat = alloc_matrix(in_mat-> num_cols, in_mat-> num_rows);
 	new_mat-> num_cols = in_mat-> num_rows;
 	new_mat-> num_rows = in_mat-> num_cols;
 
-	new_mat-> elements = malloc(in_mat-> num_cols * sizeof(int *));
 	int i;
-	for (i = 0; i < in_mat-> num_cols; i++)
-	{
-		new_mat-> elements[i] = malloc(in_mat-> num_rows * sizeof(int));
-	}
-
 	int row_counter;
 	int col_counter;
 	for (row_counter = 0; row_counter < in_mat-> num_rows; row_counter++)

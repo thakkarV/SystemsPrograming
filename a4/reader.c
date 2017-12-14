@@ -47,8 +47,6 @@ matrix * get_matrix(void)
 
 		token = strtok(NULL, " ");
 	}
-
-
 	mat-> num_cols = col_counter;
 	mat-> elements[row_counter++] = row;
 
