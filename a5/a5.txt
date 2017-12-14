@@ -1,0 +1,63 @@
+CS 410	
+Systems Programming
+Instructor: Eric Missimer
+Assignment 5
+Note: Please follow the assignment guidelines carefully and submit exactly the information that is required. Any submission not in the correct format (i.e., adhering to name conventions etc) will not be graded.
+Purpose
+
+In this assignment you will learn about how a debugger works by creating one youself. You will create a command line debugger, called mygdb, similar to the GNU project debugger (gdb). Your debugger will allow you to stop program execution and examine variables. If you are not already familiar with gdb, it is highly recommended that you experiment with it. The commands that gdb provides will be similar to the ones you create for your own debugger. For simplicity, you can assume that the program you are debugging was created from one source file (although your debugger should definitely be organized into multiple source files).
+
+DWARF
+
+DWARF is the debug format used to store information, such as where local variables are stored on the stack and which instruction corresponds to which line of source code. The debug information is stored in the sections .debug_*. Note that these sections will usually only be generated if the compiler is instructed to create them. For gcc passing the -g flag will generate the debug sections. More information about the details of DWARF can be found at http://www.dwarfstd.org/doc/Debugging%20using%20DWARF.pdf and at http://dwarfstd.org/doc/Dwarf3.pdf . Note that on cs410.bu.edu we are using DWARFv3 not DWARFv4.
+
+libdwarf
+
+We will be using the libdwarf library to parse the DWARF information for us. This does not mean you do not need to understand the layout of DWARF, it just means you don't need to understand the very low-level details. libdwarf is available only on cs410.bu.edu, it is not available on csa2.bu.edu. Furthermore, in order to include the header files for libdwarf you will need to pass "-I/usr/include/libdwarf" to gcc when you try to compile your source files. To link with libdwarf, you will need to pass"-ldwarf" to gcc when you build mygdb. Information on libdwarf can be found at: ftp://ftp.software.ibm.com/software/os390/czos/dwarf/libdwarf2.1.pdf. Note that this is a reference manual, it is not meant to be read from front to back, but you will be searching through it to figure out how to use the necessary functions in libdwarf.
+
+Part 1 - PTrace and Breakpoints
+
+The first part in implementing your debugger will be to fork and ptrace the child process in your debugger and wait for the child process to signal the parent. You have already covered in class the basics of ptrace; more information can be found in the Stevens book and here. Your debugger should behave similarly to gdb in that the debugged program can be specified via the "file" command. You can also have it specified via command line arguments to your debugger but that is not necessary. When the program starts the user is presented with a command line interface where they can specify breakpoints or enter other commands. The program being debugged does not start until the user enters the "run" command.
+
+In Linux on x86, a breakpoint is implemented by using the int 3 instruction. The specific opcode is one byte long and is {0xCC}. If this instruction is encountered during the execution of a program being traced via ptrace the parent process will be woken up if it is waiting via wait or waitpid. At this point, the parent can examine the child process.
+
+Once you have a general idea of how to set breakpoints, you still need to know where to set them. Your program should set breakpoints via the "break" command, similar to gdb. When you reach a breakpoint, your debugger should determine which breakpoint was reached and print some information useful to the user so he/she knows where the debugged program stopped, in case you have multiple breakpoints. After a breakpoint is reached, the user should be able to execute the continue command ("continue") and the program should continue executing.
+
+Note: In order to insert a breakpoint, you will need to modify the code of the debugged program. Before you modify the code, you will need to read the original code so it can be restored after the breakpoint has been reached. Also, just like gdb, your breakpoint should exist past hitting it once. Therefore, you need to be able to restore the original instruction, perform a single step (see ptrace SINGLESTEP) in the child process and then restore the breakpoint.
+
+Part 2 - Printing 64 bit Signed Local Integer Variables
+
+Once you have reached a breakpoint and stopped execution of your program, your debugger should be able to print local variables. For this part of the assignment, you can assume all variables are 64 bit signed integers (i.e. of type "long" on 64 bit Linux). To specify a variable, the user should type "print x" where x is the name of the variable. The information for local symbols is stored in the DWARF/debug sections of the program file. DWARF uses a hierarchical structure with a debugging information entry (DIE) being the main hierarchical element. For this part of the assignment, you will read the DIEs and find local variables. Along with finding local variables, you can find the variable type. The variable type is important as it contains information about the size, and given a type, you will know how to display it to the user. Extra credit will be given to those who figure out how to read the variable type and print variables types other than 64 bit signed integers.
+
+Extra Credit
+
+Extra credit will be given for any functionality beyond the functionality specified in parts 1 and 2. The functionality you implement should mimic gdb. Some examples are below.
+
+Next step functionality: similar to the gdb "next" command, just as before, you should print the file, line number and corresponding line of code. You should step over function calls.
+Step into functions: Step into the function about to be called, if no function is able to be called, step to the next line. Similar to the gdb "step" command.
+Printing local variables of any type.
+Printing global variables.
+Supporting programs made from multiple source files.
+Grading Criteria
+
+Functionality	Points
+Part 1 - Breakpoints at line locations and basic debug commands: for full credit, you must support multiple breakpoints and display a meaningful message to the user so they know which breakpoint they are at. Your debugger must also support the following commands:
+file <program_to_debug> -- specifies that program_to_debug will be the program executed and debugged when the run command is executed
+run <args> -- start running the program; if there are command-line arguments, put them after the run invocation
+quit -- exit the debugger
+break <line_number> -- Set a breakpoint at line_number
+continue -- continue running, after a break
+The commands in this assignment are very similar to the ones in gdb, it is highly recommended you familiarize yourself with the gdb commands so you know what you are suppose to implement.	55
+Part 2 - Printing 64 bit signed local integer variables. i.e.
+print <variable_name> -- print the current value of variable variable_name assuming it is a 64 bit signed local integer
+25
+Programming Style: Your code should be well written, commented and organized (e.g. not in source one file). Your program should also be resilient to unknown commands, invalid inputs (e.g. trying to break at lines that do not exist).	20
+Useful Links:
+
+Playing with ptrace, part I
+Playing with ptrace, part II
+Debugging Using DWARF
+How Debuggers Work Part 2 - Breakpoints by Eli Bendersky
+Submission:
+
+All source code and a Makefile should be gsubmitted to a5/. Make sure you include a README file to explain the features and limitations of your solution. This assignment is to be accomplished individually. While students are encouraged to discuss the assignment the code you submit must be your creation. Copying code from sources other than the book and the code examples given in class is unacceptable. Students should refer to the BU code of academic conduct.
