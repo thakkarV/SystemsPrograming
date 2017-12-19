@@ -1,6 +1,8 @@
 #ifndef DWARF_UTILS
 #define DWARF_UTILS 
 
+#include "datastructures.h"
+
 #include <stdbool.h>
 #include <sys/types.h>
 #include <dwarf.h>
