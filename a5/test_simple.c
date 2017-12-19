@@ -9,5 +9,11 @@ int main(int argc, char const * argv [])
 	printf("It only prints out 2+2=%d\n", 2+2);
 	int c = a + b / 2;
 	printf("(a + b) / 2 = %d", c);
-	return 0;
+
+	while (c < 100)
+	{
+		c += c;
+	}
+
+	return c;
 }
