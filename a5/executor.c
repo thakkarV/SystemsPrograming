@@ -174,7 +174,7 @@ void process_status(int status)
 		if (info.si_signo == SIGTRAP)
 		{
 			breakpoint * bp = get_breakpoint_by_addr(bp_list_head, (void *) (get_register(rip) - 1));
-			printf("Breakpoint %d at line %p.\n", bp-> bp_count, bp-> srcfile_line_num);
+			printf("Breakpoint %d at line %d.\n", bp-> bp_count, bp-> srcfile_line_num);
 		}
 		else
 		{
