@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/types.h>
+#include <dwarf.h>
+#include <libdwarf.h>
 
 #include "executor.h"
 #include "datastructures.h"
@@ -21,7 +23,6 @@ extern breakpoint * bp_list_head;
 extern Dwarf_Debug dwarf_dbg;
 extern Dwarf_Error dwarf_err;
 extern int elf_fd;
-
 
 // commands processors
 void do_run();
