@@ -70,6 +70,7 @@ void do_set_breakpoint(unsigned int line_num)
 		printf("	DBG SETTING BREAKPOINT AT %p \n\n", line_addr);
 		breakpoint * bp = alloc_breakpoint(++bp_counter);
 		bp-> bp_addr = line_addr;
+		bp-> srcfile_line_num = line_num;
 
 		if (is_running)
 		{
@@ -170,7 +171,6 @@ void process_status(int status)
 	{
 		siginfo_t info;
 		ptrace(PTRACE_GETSIGINFO, child_pid, NULL, &info);
-		printf("	DBG : CHILD SIGNALED");
 		if (info.si_signo == SIGTRAP)
 		{
 			breakpoint * bp = get_breakpoint_by_addr(bp_list_head, (void *) (get_register(rip) - 1));
@@ -178,7 +178,7 @@ void process_status(int status)
 		}
 		else
 		{
-			printf("Signal %d sent to child.\n", info.si_signo);
+			printf("Process received signal %d.\n", info.si_signo);
 		}
 	}
 }
