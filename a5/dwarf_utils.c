@@ -57,7 +57,7 @@ void do_unload_elf(void)
 	// finalize DWARF lib
 	if(dwarf_finish(dwarf_dbg, &dwarf_err) != DW_DLV_OK) {
 		fprintf(stderr, "Failed DWARF finalization\n");
-		return 1;
+		exit(1);
 	}
 	dwarf_dbg = 0;
 }

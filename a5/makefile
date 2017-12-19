@@ -15,7 +15,7 @@ all: release
 release: $(EXE)
 
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -o $(EXE) $^
+	$(CC) $(CFLAGS) -ldwarf -o $(EXE) $^
 
 $(RELDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ $<
