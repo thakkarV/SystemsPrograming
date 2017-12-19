@@ -3,12 +3,14 @@
 
 // c utils
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
+
 
 // sys utils
+#include <fcntl.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/user.h>

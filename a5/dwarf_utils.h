@@ -1,6 +1,11 @@
 #ifndef DWARF_UTILS
 #define DWARF_UTILS 
 
+#include <stdbool.h>
+#include <sys/types.h>
+#include <dwarf.h>
+#include <libdwarf.h>
+
 // globals from main that maintain the debugger state
 extern bool is_loaded;
 extern bool is_running;
