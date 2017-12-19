@@ -41,7 +41,8 @@ void parse(char ** tokens, int num_args)
 		(strcmp(tokens[0], CMD_QUIT_SHORT) == 0))
 	{
 		if (is_running)
-			do_quit();
+			if (getYN("A debugging session is active. Quit anyway?"));
+				do_quit();
 		else
 			exit(0);
 	}
