@@ -1,6 +1,6 @@
 CC = gcc
 
-SRCS = mygdb.c reader.c parser.c executor.c datastructures.c
+SRCS = mygdb.c reader.c parser.c executor.c dwarf_utils.c datastructures.c
 OBJS = $(SRCS:.c=.o)
 
 # Release build settings
@@ -18,7 +18,7 @@ $(EXE): $(OBJS)
 	$(CC) $(CFLAGS) -I/usr/include/libdwarf -o $(EXE) $^
 
 $(RELDIR)/%.o: %.c
-	$(CC) $(CFLAGS) $(LCFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(LCFLAGS) -I/usr/include/libdwarf -o $@ $<
 
 clean:
 	rm -f $(EXE) $(OBJS)
