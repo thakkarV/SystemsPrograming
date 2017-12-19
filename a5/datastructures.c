@@ -62,8 +62,8 @@ void enable_breakpoint(breakpoint * bp)
 void disable_breakpoint(breakpoint * bp)
 {
 	// get value and replace int 3 with original bp_data
-	uint64_t  instruction = ptrace(PTRACE_PEEKDATA, child_pid, bp->bp_addr, 0);
-	uint64_t  restored =  ((instruction & ~0xff) | bp-> bp_data);
+	uint64_t instruction = ptrace(PTRACE_PEEKDATA, child_pid, bp->bp_addr, 0);
+	uint64_t restored =  ((instruction & ~0xff) | bp-> bp_data);
 	ptrace(PTRACE_POKEDATA, child_pid, bp-> bp_addr, restored);
 	bp-> is_enabled = false;
 }

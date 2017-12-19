@@ -63,7 +63,7 @@ void do_set_breakpoint(unsigned int line_num)
 
 	if (line_addr == NULL)
 	{
-		printf("No line %d in the current file.\n", input_line_num);
+		printf("No line %d in the current file.\n", line_num);
 	}
 	else
 	{
