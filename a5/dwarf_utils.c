@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-
 // sys utils
 #include <fcntl.h>
 #include <unistd.h>
@@ -22,30 +21,36 @@
 #include <dwarf.h>
 #include <libdwarf.h>
 
+Dwarf_Die cu_die = NULL;
+
 void * get_dwarf_line_addr_from_line(int input_line_num)
 {
+
 	Dwarf_Unsigned cu_header_length, abbrev_offset, next_cu_header;
 	Dwarf_Half version_stamp, address_size;
 	Dwarf_Error err;
-	Dwarf_Die no_die = 0, cu_die, child_die;
-	/* Find compilation unit header */
-	if(dwarf_next_cu_header(dwarf_dbg,
-							&cu_header_length,
-							&version_stamp,
-							&abbrev_offset,
-							&address_size,
-							&next_cu_header,
-							&err) == DW_DLV_ERROR)
+	Dwarf_Die no_die = 0;
+	if (cu_die == NULL)
 	{
-		die("Error reading DWARF cu header\n");
-	}
+		/* Find compilation unit header */
+		if(dwarf_next_cu_header(dwarf_dbg,
+								&cu_header_length,
+								&version_stamp,
+								&abbrev_offset,
+								&address_size,
+								&next_cu_header,
+								&err) == DW_DLV_ERROR)
+		{
+			die("Error reading DWARF cu header\n");
+		}
 
-	/* Expect the CU to have a single sibling - a DIE */
-	if(dwarf_siblingof(dwarf_dbg, no_die, &cu_die, &err) == DW_DLV_ERROR)
-	{
-		die("Error getting sibling of CU\n");
+		/* Expect the CU to have a single sibling - a DIE */
+		if(dwarf_siblingof(dwarf_dbg, no_die, &cu_die, &err) == DW_DLV_ERROR)
+		{
+			die("Error getting sibling of CU\n");
+		}
 	}
-
+	
 	int i;
 	Dwarf_Error error;
 	Dwarf_Signed cnt;
