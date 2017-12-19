@@ -28,7 +28,7 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 	Dwarf_Error err;
 	Dwarf_Die no_die = 0, cu_die, child_die;
 	/* Find compilation unit header */
-	if(dwarf_next_cu_header(dbg,
+	if(dwarf_next_cu_header(dwarf_dbg,
 							&cu_header_length,
 							&version_stamp,
 							&abbrev_offset,
@@ -40,7 +40,7 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 	}
 
 	/* Expect the CU to have a single sibling - a DIE */
-	if(dwarf_siblingof(dbg, no_die, &cu_die, &err) == DW_DLV_ERROR)
+	if(dwarf_siblingof(dwarf_dbg, no_die, &cu_die, &err) == DW_DLV_ERROR)
 	{
 		die("Error getting sibling of CU\n");
 	}
@@ -50,6 +50,7 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 	Dwarf_Signed cnt;
 	Dwarf_Line *linebuf;
 	bool found = false;
+	void * ret_addr = NULL;
 	if(dwarf_srclines(cu_die, &linebuf, &cnt, &error) == DW_DLV_OK)
 	{
 		for(i = 0; i < cnt; ++i)
@@ -71,23 +72,24 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 			if (input_line_num == (unsigned int) line_num)
 			{
 				bool found = true;
-				dwarf_dealloc(dbg, linebuf[i], DW_DLA_LINE);
-				dwarf_dealloc(dbg, linebuf, DW_DLA_LIST);
+				dwarf_dealloc(dwarf_dbg, linebuf[i], DW_DLA_LINE);
+				dwarf_dealloc(dwarf_dbg, linebuf, DW_DLA_LIST);
+				ret_addr = (void *) line_addr;
 				break;
 			}
 
-			dwarf_dealloc(dbg, linebuf[i], DW_DLA_LINE);
+			dwarf_dealloc(dwarf_dbg, linebuf[i], DW_DLA_LINE);
 		}
-		dwarf_dealloc(dbg, linebuf, DW_DLA_LIST);
+		dwarf_dealloc(dwarf_dbg, linebuf, DW_DLA_LIST);
 
 		if (found)
 		{
-			return (void *) line_addr;
+			return ret_addr;
 		}
 		else
 		{
 			printf("No line %d in the current file.\n", input_line_num);
-			return NULL;
+			return ret_addr;
 		}
 	}
 }
@@ -139,7 +141,7 @@ void do_unload_elf(void)
 	{
 		breakpoint * nbp = bp-> next;
 		free(bp);
-		bp = nbp
+		bp = nbp;
 	}
 	bp_list_head = NULL;
 }

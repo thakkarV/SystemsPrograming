@@ -39,7 +39,7 @@ breakpoint * alloc_breakpoint(int count);
 
 // helper methods for the breakpoint struct
 breakpoint * get_breakpoint_by_addr(breakpoint * head, void * addr);
-breakpoint * get_breakpoint_by_line(breakpoint * head, int line_num);
+breakpoint * get_breakpoint_by_line(breakpoint * head, unsigned int line_num);
 void enable_breakpoint(breakpoint * bp);
 void disable_breakpoint(breakpoint * bp);
 

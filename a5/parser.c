@@ -75,7 +75,7 @@ void parse(char ** tokens, int num_args)
 	{
 		if (is_loaded)
 		{
-			int line_num = atoi(tokens[1]);
+			unsigned int line_num = (unsigned int) atoi(tokens[1]);
 			do_set_breakpoint(line_num);
 		}
 		else
@@ -88,7 +88,7 @@ void parse(char ** tokens, int num_args)
 	{
 		if (is_loaded)
 		{
-			int line_num = atoi(tokens[1]);
+			unsigned int line_num = (unsigned int) atoi(tokens[1]);
 			do_unset_breakpoint(line_num);
 		}
 		else

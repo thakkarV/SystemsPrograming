@@ -57,7 +57,7 @@ void do_run(const char * path, char ** argv)
 }
 
 
-void do_set_breakpoint(int line_num)
+void do_set_breakpoint(unsigned int line_num)
 {
 	void * line_addr = get_dwarf_line_addr_from_line(line_num);
 	breakpoint * bp = alloc_breakpoint(++bp_counter);
@@ -76,7 +76,7 @@ void do_set_breakpoint(int line_num)
 }
 
 
-void do_unset_breakpoint(int line_num)
+void do_unset_breakpoint(unsigned int line_num)
 {
 	// get
 	breakpoint * bp = get_breakpoint_by_line(bp_list_head, line_num);

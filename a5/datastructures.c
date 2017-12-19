@@ -26,7 +26,7 @@ breakpoint * get_breakpoint_by_addr(breakpoint * head, void * addr)
 	return NULL;
 }
 
-breakpoint * get_breakpoint_by_line(breakpoint * head, void * line_num)
+breakpoint * get_breakpoint_by_line(breakpoint * head, unsigned int line_num)
 {
 	while (head != NULL)
 	{

@@ -27,8 +27,8 @@ extern int elf_fd;
 
 // commands processors
 void do_run();
-void do_set_breakpoint(int line_num);
-void do_unset_breakpoint(int line_num);
+void do_set_breakpoint(unsigned int line_num);
+void do_unset_breakpoint(unsigned int line_num);
 void do_continue();
 void do_print();
 void do_quit();
