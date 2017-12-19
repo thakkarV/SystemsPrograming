@@ -29,7 +29,7 @@ bool is_loaded;
 bool is_running;
 char * elf_path = "";
 
-// swarf vars
+// DWARF vars
 Dwarf_Debug dwarf_dbg = 0;
 Dwarf_Error dwarf_err;
 int elf_fd = -1;
@@ -53,17 +53,18 @@ int main(int argc, char const * argv [])
 	terminate  = false;
 	while (!terminate)
 	{
+		// read
 		print_prompt();
 		char * input = read_input();
-		// printf("	DBG : INPUT STR = \"%s\"\n", input);
 
 		if (strcmp(input, "\n") != 0 &&
 			strcmp(input, "") != 0)
 		{
+			// tokenzie
 			int num_args;
 			char ** tokens = tokenize(input, &num_args);
-			// printf("	DBG : tokenise done. %d = num_args\n", num_args); 
 
+			// parse and execute
 			parse(tokens, num_args);
 		}
 

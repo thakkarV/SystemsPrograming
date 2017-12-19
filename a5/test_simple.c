@@ -8,7 +8,7 @@ int main(int argc, char const * argv [])
 	int b = 7;
 	printf("It only prints out 2+2=%d\n", 2+2);
 	int c = a + b / 2;
-	printf("(a + b) / 2 = %d", c);
+	printf("(a + b) / 2 = %d\n", c);
 
 	while (c < 100)
 	{

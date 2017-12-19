@@ -26,7 +26,6 @@ Dwarf_Die cu_die = NULL;
 
 void * get_dwarf_line_addr_from_line(int input_line_num)
 {
-
 	Dwarf_Unsigned cu_header_length, abbrev_offset, next_cu_header;
 	Dwarf_Half version_stamp, address_size;
 	Dwarf_Error err;
@@ -196,13 +195,11 @@ void set_register(unsigned reg_num, unsigned long value)
 }
 
 
-void die(char* fmt, ...)
+void die(char * fmt, ...)
 {
 	va_list args;
-
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
 	va_end(args);
-
-	exit(EXIT_FAILURE);
+	exit(1);
 }
