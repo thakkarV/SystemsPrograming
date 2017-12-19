@@ -10,6 +10,7 @@
 
 // sys utils
 #include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
@@ -101,9 +102,18 @@ void do_load_elf(char * path)
 	// open elf
 	if((elf_fd = open(elf_path, O_RDONLY)) < 0)
 	{
-		perror("open");
-		exit(1);
+		if (errno == ENOENT)
+		{
+			printf("%s: No such file or directory.\n");
+		}
+		else
+		{
+			perror("open");
+			exit(1);
+		}
 	}
+
+	printf("Reading symbols from %s...", elf_path);
 
 	// init DWARF libs
 	if(dwarf_init(elf_fd, DW_DLC_READ, 0, 0, &dwarf_dbg, &dwarf_err) != DW_DLV_OK)
@@ -111,6 +121,8 @@ void do_load_elf(char * path)
 		fprintf(stderr, "Failed DWARF initialization\n");
 		exit(1);
 	}
+
+	printf("done.\n");
 }
 
 
