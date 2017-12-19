@@ -75,7 +75,6 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 				die("Error dwarf_lineno");
 			}
 
-			printf("line: %u, addr = %p\n", (unsigned int) line_num, (void *) line_addr);
 			if (input_line_num == (unsigned int) line_num)
 			{
 				bool found = true;

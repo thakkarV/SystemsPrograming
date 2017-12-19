@@ -191,7 +191,7 @@ bool getYN(char * prompt)
 	char line[128];
 	do
 	{
-		printf("%s (y or n) ");
+		printf("%s (y or n) ", prompt);
 		fgets(line, 128, stdin);
 
 		if (line[0] == 'y')
