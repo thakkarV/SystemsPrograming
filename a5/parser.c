@@ -178,5 +178,6 @@ char ** tokenize(char * command, int * num_tokens)
 		}
 	}
 
+	tokens[*num_tokens] = NULL;
 	return tokens;
 }
