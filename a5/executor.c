@@ -166,17 +166,19 @@ void process_status(int status)
 			bp = bp-> next;
 		}
 	}
-	else if (WIFSIGNALED(status))
+	else
 	{
+		siginfo_t info;
+		ptrace(PTRACE_GETSIGINFO, child_pid, NULL, &info);
 		printf("	DBG : CHILD SIGNALED");
-		if (WTERMSIG(status) == SIGTRAP)
+		if (info.si_signo == SIGTRAP)
 		{
 			breakpoint * bp = get_breakpoint_by_addr(bp_list_head, (void *) (get_register(rip) - 1));
 			printf("Breakpoint %d at line %p.\n", bp-> bp_count, bp-> srcfile_line_num);
 		}
 		else
 		{
-			printf("Signal %d sent to child.\n", WTERMSIG(status));
+			printf("Signal %d sent to child.\n", info.si_signo);
 		}
 	}
 }
