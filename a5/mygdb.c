@@ -1,21 +1,37 @@
+// C utils
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <signal.h>
 #include <stdbool.h>
+
+// Sys utils
+#include <signal.h>
 #include <sys/types.h>
 
+// DWARF libs
+#include <dwarf.h>
+#include <libdwarf.h>
+
+// modules
 #include "reader.h"
 #include "parser.h"
 #include "executor.h"
 
-bool is_loaded;
-bool is_running;
+// debugger state
 bool terminate;
-char * elf_path = "";
 pid_t child_pid;
 breakpoint * bp_list_head;
+
+// Child state
+bool is_loaded;
+bool is_running;
+char * elf_path = "";
+
+// swarf vars
+Dwarf_Debug dwarf_dbg = 0;
+Dwarf_Error dwarf_err;
+int elf_fd = -1;
 
 void ignore_int(int);
 void print_prompt(void);
@@ -53,6 +69,9 @@ int main(int argc, char const * argv [])
 		free(input);
 	}
 
+	if (is_loaded)
+		do_unload_elf();
+	
 	return 0;
 }
 

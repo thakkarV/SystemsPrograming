@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <signal.h>
 
@@ -50,6 +51,9 @@ void execute(char ** tokens, int num_args)
 	{
 		if (!is_running)
 		{
+			if (is_loaded)
+				do_unload_elf();
+			
 			do_load_elf(tokens[1]);
 			is_loaded = true;
 		}
@@ -58,7 +62,6 @@ void execute(char ** tokens, int num_args)
 			if (getYN("A program is being debugged already.\nAre you sure you want to change the file?"))
 			{
 				kill(child_pid, SIGKILL);
-				free(elf_path);
 				do_load_elf(tokens[1]);
 			}
 			else
