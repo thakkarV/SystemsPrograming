@@ -76,14 +76,14 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 				dwarf_dealloc(dwarf_dbg, linebuf[i], DW_DLA_LINE);
 				dwarf_dealloc(dwarf_dbg, linebuf, DW_DLA_LIST);
 				ret_addr = (void *) line_addr;
-				break;
+				return ret_addr;
 			}
 
 			dwarf_dealloc(dwarf_dbg, linebuf[i], DW_DLA_LINE);
 		}
 		dwarf_dealloc(dwarf_dbg, linebuf, DW_DLA_LIST);
-		return ret_addr;
 	}
+	return ret_addr;
 }
 
 // load ELF. Called by "file" command

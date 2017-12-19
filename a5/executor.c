@@ -67,6 +67,7 @@ void do_set_breakpoint(unsigned int line_num)
 	}
 	else
 	{
+		printf("DBG SETTING BREAKPOINT AT %p \n\n", line_addr);
 		breakpoint * bp = alloc_breakpoint(++bp_counter);
 		bp-> bp_addr = line_addr;
 
