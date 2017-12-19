@@ -23,7 +23,6 @@
 
 void * get_dwarf_line_addr_from_line(int input_line_num)
 {
-
 	Dwarf_Unsigned cu_header_length, abbrev_offset, next_cu_header;
 	Dwarf_Half version_stamp, address_size;
 	Dwarf_Error err;

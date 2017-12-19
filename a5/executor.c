@@ -145,8 +145,8 @@ void process_status(int status)
 	{
 		if (WTERMSIG(status) == SIGTRAP)
 		{
-			breakpoint * bp = get_breakpoint(get_register(rip) - 1);
-			printf("Breakpoint %d at line %p.\n", bp-> bp_count, bp-> srcfile_line_num)
+			breakpoint * bp = get_breakpoint(bp_list_head, get_register(rip) - 1);
+			printf("Breakpoint %d at line %p.\n", bp-> bp_count, bp-> srcfile_line_num);
 		}
 		else
 		{
@@ -179,7 +179,7 @@ void step_over_breakpoint(void)
 	unsigned long rip_val = get_register(rip);
 	breakpoint * bp;
 
-	if ((bp = get_breakpoint(rip_val - 1)) != NULL)
+	if ((bp = get_breakpoint_by_addr(rip_val - 1)) != NULL)
 	{
 		if (bp-> is_enabled)
 		{
