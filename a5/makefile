@@ -5,7 +5,7 @@ OBJS = $(SRCS:.c=.o)
 
 # Release build settings
 EXE = mygdb
-CFLAGS = -O0
+CFLAGS = -O0 -I/usr/include/libdwarf
 
 .PHONY: all clean remake
 
@@ -15,10 +15,10 @@ all: release
 release: $(EXE)
 
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -I/usr/include/libdwarf -o $(EXE) $^
+	$(CC) $(CFLAGS) -o $(EXE) $^
 
 $(RELDIR)/%.o: %.c
-	$(CC) $(CFLAGS) $(LCFLAGS) -I/usr/include/libdwarf -o $@ $<
+	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
 	rm -f $(EXE) $(OBJS)
