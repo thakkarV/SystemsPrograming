@@ -105,6 +105,7 @@ void do_load_elf(char * path)
 		if (errno == ENOENT)
 		{
 			printf("%s: No such file or directory.\n");
+			return;
 		}
 		else
 		{
