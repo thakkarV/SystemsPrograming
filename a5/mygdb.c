@@ -55,14 +55,14 @@ int main(int argc, char const * argv [])
 	{
 		print_prompt();
 		char * input = read_input();
-		printf("DBG : INPUT STR = \"%s\"\n", input);
+		printf("	DBG : INPUT STR = \"%s\"\n", input);
 
 		if (strcmp(input, "\n") != 0 &&
 			strcmp(input, "") != 0)
 		{
 			int num_args;
 			char ** tokens = tokenize(input, &num_args);
-			printf("DBG : tokenise done. %d = num_args\n", num_args); 
+			printf("	DBG : tokenise done. %d = num_args\n", num_args); 
 
 			parse(tokens, num_args);
 		}

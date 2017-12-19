@@ -181,3 +181,21 @@ char ** tokenize(char * command, int * num_tokens)
 	tokens[*num_tokens] = NULL;
 	return tokens;
 }
+
+
+bool getYN(char * prompt)
+{
+	char line[128];
+	do
+	{
+		printf("%s (y or n) ");
+		fgets(line, 128, stdin);
+
+		if (line[0] == 'y')
+			return true;
+		if (line[0] == 'n')
+			return false;
+
+		printf("Please answer y or n.\n");
+	} while (true);
+}

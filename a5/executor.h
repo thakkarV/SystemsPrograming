@@ -37,7 +37,4 @@ void do_quit();
 void process_status(int status);
 void step_over_breakpoint(void);
 
-// helpers
-bool getYN(char * prompt);
-
 #endif // EXECUTOR

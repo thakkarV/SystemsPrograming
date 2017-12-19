@@ -67,7 +67,7 @@ void do_set_breakpoint(unsigned int line_num)
 	}
 	else
 	{
-		printf("DBG SETTING BREAKPOINT AT %p \n\n", line_addr);
+		printf("	DBG SETTING BREAKPOINT AT %p \n\n", line_addr);
 		breakpoint * bp = alloc_breakpoint(++bp_counter);
 		bp-> bp_addr = line_addr;
 
@@ -155,10 +155,19 @@ void process_status(int status)
 		else
 			printf("Program exited with code %d.\n", ret_val);
 
-		is_running = 0;
+		is_running = false;
+
+		// mark all BPs as disabled after exit
+		breakpoint * bp = bp_list_head;
+		while (bp != NULL)
+		{
+			bp-> is_enabled = false;
+			bp = bp-> next;
+		}
 	}
 	else if (WIFSIGNALED(status))
 	{
+		printf("	DBG : CHILD SIGNALED");
 		if (WTERMSIG(status) == SIGTRAP)
 		{
 			breakpoint * bp = get_breakpoint_by_addr(bp_list_head, (void *) (get_register(rip) - 1));
@@ -172,27 +181,10 @@ void process_status(int status)
 }
 
 
-bool getYN(char * prompt)
-{
-	char line[128];
-	do
-	{
-		printf("%s (y or n) ");
-		fgets(line, 128, stdin);
-
-		if (line[0] == 'y')
-			return true;
-		if (line[0] == 'n')
-			return false;
-
-		printf("Please answer y or n.\n");
-	} while (true);
-}
-
-
 void step_over_breakpoint(void)
 {
 	unsigned long rip_val = get_register(rip);
+	printf("	DBG REG RIP VAL = %x\n");
 	breakpoint * bp;
 
 	if ((bp = get_breakpoint_by_addr(bp_list_head, (void *) (rip_val - 1))) != NULL)
