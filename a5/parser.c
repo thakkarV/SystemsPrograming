@@ -126,5 +126,3 @@ char ** tokenize(char * command, int * num_tokens)
 
 	return tokens;
 }
-
-

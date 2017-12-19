@@ -15,6 +15,7 @@ bool is_running;
 bool terminate;
 char * elf_path = "";
 pid_t child_pid;
+breakpoint * bp_list_head;
 
 void ignore_int(int);
 void print_prompt(void);

@@ -89,3 +89,15 @@ void process_status(int status)
 		printf("Signal %d sent to child.\n", WTERMSIG(status));
 	}
 }
+
+
+// resgister methods
+uint64_t get_register(pid_t pid, unsigned reg_num)
+{
+	
+}
+
+void set_register(pid_t pid, unsigned reg_num, uint64_t value)
+{
+
+}
