@@ -80,8 +80,6 @@ void do_set_breakpoint(unsigned int line_num)
 		if (bp_list_head == NULL)
 		{
 			bp_list_head = bp;
-			bp-> next = bp;
-			bp-> previous = bp;
 		}
 		else
 		{
@@ -110,8 +108,13 @@ void do_unset_breakpoint(unsigned int line_num)
 		if (bp-> is_enabled)
 			disable_breakpoint(bp);
 		// splice out
-		bp-> previous-> next = bp-> next;
-		bp-> next-> previous = bp-> previous;
+
+		if (bp-> previous != NULL)
+			bp-> previous-> next = bp-> next;
+
+		if (bp-> next != NULL)
+			bp-> next-> previous = bp-> previous;
+		
 		if (bp == bp_list_head)
 			bp_list_head = bp-> next;
 		// dealloc
