@@ -185,3 +185,15 @@ void set_register(unsigned reg_num, unsigned long value)
 
 	ptrace(PTRACE_SETREGS, child_pid, NULL, &regs);
 }
+
+
+void die(char* fmt, ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+	vfprintf(stderr, fmt, args);
+	va_end(args);
+
+	exit(EXIT_FAILURE);
+}

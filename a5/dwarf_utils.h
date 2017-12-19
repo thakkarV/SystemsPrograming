@@ -32,4 +32,7 @@ void set_register(unsigned reg_num, unsigned long value);
 // getters
 void * get_dwarf_line_addr_from_line(int input_line_num);
 
+// helpers
+void die(char* fmt, ...);
+
 #endif
