@@ -35,7 +35,7 @@ const char const * CMD_QUIT_SHORT = "q";
 
 
 
-void execute(char ** tokens, int num_args)
+void parse(char ** tokens, int num_args)
 {
 	// QUIT
 	if ((strcmp(tokens[0], CMD_QUIT_LONG) == 0) ||
@@ -84,7 +84,7 @@ void execute(char ** tokens, int num_args)
 		}
 		else
 		{
-			printf("No symbol table is loaded.  Use the \"file\" command.\n");
+			printf("No symbol table is loaded. Use the \"file\" command.\n");
 		}
 	}
 	// CLEAR BREAKPOINT
@@ -100,7 +100,7 @@ void execute(char ** tokens, int num_args)
 		}
 		else
 		{
-			printf("No symbol table is loaded.  Use the \"file\" command.\n");
+			printf("No symbol table is loaded. Use the \"file\" command.\n");
 		}
 	}
 	// START PROGRAM

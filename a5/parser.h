@@ -17,6 +17,6 @@ extern Dwarf_Error dwarf_err;
 extern int elf_fd;
 
 char ** tokenize(char * raw_input, int * num_tokens);
-void execute(char ** toekns, int num_args);
+void parse(char ** toekns, int num_args);
 
 #endif // PARSER

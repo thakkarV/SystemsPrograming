@@ -63,7 +63,7 @@ int main(int argc, char const * argv [])
 			char ** tokens = tokenize(input, &num_args);
 			printf("DBG : tokenise done. %d = num_args\n", num_args); 
 
-			execute(tokens, num_args);
+			parse(tokens, num_args);
 		}
 
 		free(input);
