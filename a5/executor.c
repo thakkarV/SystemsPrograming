@@ -88,6 +88,7 @@ void do_set_breakpoint(unsigned int line_num)
 			bp-> previous = NULL;
 			bp_list_head = bp;
 		}
+		printf("Breakpoint %d set at line %d.\n", bp_counter, line_num);
 	}
 }
 
