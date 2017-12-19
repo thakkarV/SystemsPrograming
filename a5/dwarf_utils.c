@@ -2,10 +2,11 @@
 #include "datastructures.h"
 
 // c utils
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <fcntl.h>
 
 // sys utils
 #include <signal.h>
