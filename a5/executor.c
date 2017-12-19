@@ -77,10 +77,17 @@ void do_set_breakpoint(unsigned int line_num)
 			bp-> is_enabled = true;
 		}
 
-		bp_list_head-> previous = bp;
-		bp-> next = bp_list_head;
-		bp-> previous = NULL;
-		bp_list_head = bp;
+		if (bp_list_head == NULL)
+		{
+			bp_list_head = bp;
+		}
+		else
+		{
+			bp_list_head-> previous = bp;
+			bp-> next = bp_list_head;
+			bp-> previous = NULL;
+			bp_list_head = bp;
+		}
 	}
 }
 
