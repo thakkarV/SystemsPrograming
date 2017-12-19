@@ -34,7 +34,6 @@ const char const * CMD_QUIT_LONG = "quit";
 const char const * CMD_QUIT_SHORT = "q";
 
 
-
 void parse(char ** tokens, int num_args)
 {
 	// QUIT
