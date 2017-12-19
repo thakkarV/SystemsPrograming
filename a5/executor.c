@@ -81,6 +81,8 @@ void do_set_breakpoint(unsigned int line_num)
 		if (bp_list_head == NULL)
 		{
 			bp_list_head = bp;
+			bp-> next = bp;
+			bp-> previous = bp;
 		}
 		else
 		{

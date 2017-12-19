@@ -43,15 +43,14 @@ breakpoint * get_breakpoint_by_line(breakpoint * head, unsigned int line_num);
 void enable_breakpoint(breakpoint * bp);
 void disable_breakpoint(breakpoint * bp);
 
-enum REGS
+enum REGISTERS
 {
     rax, rbx, rcx, rdx,
     rdi, rsi, rbp, rsp,
     r8,  r9,  r10, r11,
     r12, r13, r14, r15,
-    rip, rflags,    cs,
-    orig_rax, fs_base,
-    gs_base,
+    rip, rflags, cs,
+    orig_rax, fs_base, gs_base,
     fs, gs, ss, ds, es
 };
 
