@@ -184,7 +184,7 @@ void process_status(int status)
 void step_over_breakpoint(void)
 {
 	unsigned long rip_val = get_register(rip);
-	printf("	DBG REG RIP VAL = %x\n");
+	printf("	DBG REG RIP VAL = %x\n", rip_val);
 	breakpoint * bp;
 
 	if ((bp = get_breakpoint_by_addr(bp_list_head, (void *) (rip_val - 1))) != NULL)
