@@ -60,19 +60,27 @@ void do_run(const char * path, char ** argv)
 void do_set_breakpoint(unsigned int line_num)
 {
 	void * line_addr = get_dwarf_line_addr_from_line(line_num);
-	breakpoint * bp = alloc_breakpoint(++bp_counter);
-	bp-> bp_addr = line_addr;
 
-	if (is_running)
+	if (line_addr == NULL)
 	{
-		enable_breakpoint(bp);
-		bp-> is_enabled = true;
+		printf("No line %d in the current file.\n", input_line_num);
 	}
+	else
+	{
+		breakpoint * bp = alloc_breakpoint(++bp_counter);
+		bp-> bp_addr = line_addr;
 
-	bp_list_head-> previous = bp;
-	bp-> next = bp_list_head;
-	bp-> previous = NULL;
-	bp_list_head = bp;
+		if (is_running)
+		{
+			enable_breakpoint(bp);
+			bp-> is_enabled = true;
+		}
+
+		bp_list_head-> previous = bp;
+		bp-> next = bp_list_head;
+		bp-> previous = NULL;
+		bp_list_head = bp;
+	}
 }
 
 

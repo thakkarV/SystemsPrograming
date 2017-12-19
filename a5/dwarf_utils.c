@@ -82,16 +82,7 @@ void * get_dwarf_line_addr_from_line(int input_line_num)
 			dwarf_dealloc(dwarf_dbg, linebuf[i], DW_DLA_LINE);
 		}
 		dwarf_dealloc(dwarf_dbg, linebuf, DW_DLA_LIST);
-
-		if (found)
-		{
-			return ret_addr;
-		}
-		else
-		{
-			printf("No line %d in the current file.\n", input_line_num);
-			return ret_addr;
-		}
+		return ret_addr;
 	}
 }
 
