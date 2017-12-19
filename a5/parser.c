@@ -75,11 +75,8 @@ void parse(char ** tokens, int num_args)
 	{
 		if (is_loaded)
 		{
-			// figure out DWARF shit here
-			// first distinguish between number and name
-			// if line num, get line num addr
-			// if func name, get start of func addr
-			do_set_breakpoint(0);
+			int line_num = atoi(tokens[1]);
+			do_set_breakpoint(line_num);
 		}
 		else
 		{
@@ -91,11 +88,7 @@ void parse(char ** tokens, int num_args)
 	{
 		if (is_loaded)
 		{
-			// figure out DWARF shit here
-			// first distinguish between number and name
-			// if line num, get line num addr
-			// if func name, get start of func addr
-			do_unset_breakpoint(0);
+			do_unset_breakpoint(line_num);
 		}
 		else
 		{

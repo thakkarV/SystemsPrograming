@@ -13,6 +13,9 @@ extern pid_t child_pid;
 
 typedef struct breakpoint
 {
+	// counter for this break point
+	int bp_count;
+
 	// line number in the source file where the breakpoint is to be set
 	int srcfile_line_num;
 
@@ -20,7 +23,7 @@ typedef struct breakpoint
 	uint8_t bp_data;
 
 	// address in the text of the running program where the insturction is
-	unsigned long bp_addr;
+	void * bp_addr;
 
 	// true if the breakpoint is active in the source
 	bool is_enabled;
@@ -32,10 +35,11 @@ typedef struct breakpoint
 } breakpoint;
 
 // allocator
-breakpoint * alloc_breakpoint(void);
+breakpoint * alloc_breakpoint(int count);
 
 // helper methods for the breakpoint struct
-breakpoint * get_breakpoint(breakpoint * head, unsigned long pc_addr);
+breakpoint * get_breakpoint_by_addr(breakpoint * head, void * addr);
+breakpoint * get_breakpoint_by_line(breakpoint * head, int line_num);
 void enable_breakpoint(breakpoint * bp);
 void disable_breakpoint(breakpoint * bp);
 

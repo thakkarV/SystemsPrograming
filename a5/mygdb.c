@@ -21,6 +21,7 @@
 // debugger state
 bool terminate;
 pid_t child_pid;
+int bp_counter = 0;
 breakpoint * bp_list_head;
 
 // Child state

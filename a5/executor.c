@@ -56,10 +56,12 @@ void do_run(const char * path, char ** argv)
 	}
 }
 
-void do_set_breakpoint(unsigned long addr)
+
+void do_set_breakpoint(int line_num)
 {
-	breakpoint * bp = alloc_breakpoint();
-	bp-> bp_addr = addr;
+	void * line_addr = get_dwarf_line_addr_from_line(line_num);
+	breakpoint * bp = alloc_breakpoint(++bp_counter);
+	bp-> bp_addr = line_addr;
 
 	if (is_running)
 	{
@@ -73,24 +75,36 @@ void do_set_breakpoint(unsigned long addr)
 	bp_list_head = bp;
 }
 
-void do_unset_breakpoint(unsigned long addr)
+
+void do_unset_breakpoint(int line_num)
 {
 	// get
-	breakpoint * bp = get_breakpoint(bp_list_head, addr);
-	// deactivate
-	if (bp-> is_enabled)
-		disable_breakpoint(bp);
-	// splice out
-	bp-> previous-> next = bp-> next;
-	bp-> next-> previous = bp-> previous;
-	if (bp == bp_list_head)
-		bp_list_head = bp-> next;
-	// dealloc
-	free(bp);
+	breakpoint * bp = get_breakpoint_by_line(bp_list_head, line_num);
+
+	if (bp == NULL)
+	{
+		printf("No breakponint at %d.\n", line_num);
+	}
+	else
+	{
+		// deactivate
+		if (bp-> is_enabled)
+			disable_breakpoint(bp);
+		// splice out
+		bp-> previous-> next = bp-> next;
+		bp-> next-> previous = bp-> previous;
+		if (bp == bp_list_head)
+			bp_list_head = bp-> next;
+		// dealloc
+		free(bp);
+	}
 }
+
 
 void do_continue(void)
 {
+	// check if a breakpoint was hit
+	step_over_breakpoint();
 	// resume child
 	ptrace(PTRACE_CONT, child_pid, NULL, NULL);
 
@@ -129,7 +143,15 @@ void process_status(int status)
 	}
 	else if (WIFSIGNALED(status))
 	{
-		printf("Signal %d sent to child.\n", WTERMSIG(status));
+		if (WTERMSIG(status) == SIGTRAP)
+		{
+			breakpoint * bp = get_breakpoint(get_register(rip) - 1);
+			printf("Breakpoint %d at line %p.\n", bp-> bp_count, bp-> srcfile_line_num)
+		}
+		else
+		{
+			printf("Signal %d sent to child.\n", WTERMSIG(status));
+		}
 	}
 }
 
@@ -149,4 +171,27 @@ bool getYN(char * prompt)
 
 		printf("Please answer y or n.\n");
 	} while (true);
+}
+
+
+void step_over_breakpoint(void)
+{
+	unsigned long rip_val = get_register(rip);
+	breakpoint * bp;
+
+	if ((bp = get_breakpoint(rip_val - 1)) != NULL)
+	{
+		if (bp-> is_enabled)
+		{
+			// first restore orginal instruction
+			set_register(rip, rip_val - 1);
+			disable_breakpoint(bp);
+			// single step
+			ptrace(PTRACE_SINGLESTEP, child_pid, NULL, NULL);
+			int status;
+			waitpid(child_pid, &status, 0);
+			// re-enable breakponit
+			enable_breakpoint(bp);
+		}
+	}
 }

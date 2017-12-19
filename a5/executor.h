@@ -18,6 +18,7 @@ extern bool is_running;
 extern bool terminate;
 extern char * elf_path;
 extern pid_t child_pid;
+extern int bp_counter;
 extern breakpoint * bp_list_head;
 
 extern Dwarf_Debug dwarf_dbg;
@@ -34,6 +35,7 @@ void do_quit();
 
 // wait dealers
 void process_status(int status);
+void step_over_breakpoint(void);
 
 // helpers
 bool getYN(char * prompt);

@@ -14,6 +14,7 @@ extern bool is_running;
 extern bool terminate;
 extern char * elf_path;
 extern pid_t child_pid;
+extern int bp_counter;
 extern breakpoint * bp_list_head;
 
 extern Dwarf_Debug dwarf_dbg;
@@ -27,5 +28,8 @@ void do_unload_elf(void);
 // resgister methods
 unsigned long get_register(unsigned reg_num);
 void set_register(unsigned reg_num, unsigned long value);
+
+// getters
+void * get_dwarf_line_addr_from_line(int input_line_num);
 
 #endif
