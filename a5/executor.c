@@ -1,24 +1,27 @@
 #include "executor.h"
+#include "datastructures.h"
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/user.h>
 #include <sys/types.h>
 #include <sys/ptrace.h>
 
-void do_run(const char * prog_name, char ** argv)
+void do_run(const char * path, char ** argv)
 {
 	if ((child_pid = fork()) == 0)
 	{
 		// ptrace traceme
-		if (ptrace(PTRACE_TRACEME, 0, 0, 0) < 0)
+		if (ptrace(PTRACE_TRACEME, NULL, NULL, NULL) < 0)
 		{
 			perror("ptrace");
 			exit(1);
 		}
 
-		execvp(prog_name, argv);
+		execvp(path, argv);
 		perror("execvp");
 		exit(1);
 	}
@@ -26,22 +29,60 @@ void do_run(const char * prog_name, char ** argv)
 	{
 		int ret_val;
 		waitpid(child_pid, &ret_val, 0);
-		// add all breakpoints here
+
+		// now enable all breakpoints
+		breakpoint * bp = bp_list_head;
+		while (bp != NULL)
+		{
+			if (!(bp-> is_enabled))
+				enable_breakpoint(bp);
+
+			bp = bp-> next;
+		}
+
+		do_continue();
 	}
 	else
 	{
 		perror("fork");
 		exit(1);
 	}
-
 }
 
-void do_set_breakpoint(void * addr)
+void do_set_breakpoint(unsigned long addr)
 {
+	breakpoint * bp = alloc_breakpoint();
+	bp-> bp_addr = addr;
 
+	if (is_running)
+	{
+		enable_breakpoint(bp);
+		bp-> is_enabled = true;
+	}
+
+	bp_list_head-> previous = bp;
+	bp-> next = bp_list_head;
+	bp-> previous = NULL;
+	bp_list_head = bp;
 }
 
-void do_continue()
+void do_unset_breakpoint(unsigned long addr)
+{
+	// get
+	breakpoint * bp = get_breakpoint(bp_list_head, addr);
+	// deactivate
+	if (bp-> is_enabled)
+		disable_breakpoint(bp);
+	// splice out
+	bp-> previous-> next = bp-> next;
+	bp-> next-> previous = bp-> previous;
+	if (bp == bp_list_head)
+		bp_list_head = bp-> next;
+	// dealloc
+	free(bp);
+}
+
+void do_continue(void)
 {
 	// resume child
 	ptrace(PTRACE_CONT, child_pid, NULL, NULL);
@@ -54,12 +95,12 @@ void do_continue()
 	process_status(status);
 }
 
-void do_print()
+void do_print(char * var_name)
 {
 
 }
 
-void do_quit()
+void do_quit(void)
 {
 	// kill child then terminate
 	kill(child_pid, SIGKILL);
@@ -92,12 +133,57 @@ void process_status(int status)
 
 
 // resgister methods
-uint64_t get_register(pid_t pid, unsigned reg_num)
+unsigned long get_register(unsigned reg_num)
 {
-	
+	struct user_regs_struct regs;
+	ptrace(PTRACE_GETREGS, child_pid, NULL, &regs);
+
+	switch (reg_num)
+	{
+		case rip:
+		{
+			return regs.rip;
+		}
+		default:
+		{
+			return 0;
+		}
+	}
 }
 
-void set_register(pid_t pid, unsigned reg_num, uint64_t value)
-{
 
+void set_register(unsigned reg_num, unsigned long value)
+{
+	struct user_regs_struct regs;
+	ptrace(PTRACE_GETREGS, child_pid, NULL, &regs);
+	switch (reg_num)
+	{
+		case rip:
+		{
+			regs.rip = value;
+		}
+		default:
+		{
+
+		}
+	}
+
+	ptrace(PTRACE_SETREGS, child_pid, NULL, &regs);
+}
+
+bool getYN(char * prompt)
+{
+	char line[128];
+	do
+	{
+		printf("%s (y or n) ");
+		fgets(line, 128, stdin);
+
+		if (line[0] == 'y')
+			return true;
+		if (line[0] == 'n')
+			return false;
+
+		printf("Please answer y or n.\n");
+	} while (true);
 }

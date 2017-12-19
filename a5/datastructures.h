@@ -2,7 +2,14 @@
 #define DATASTRCUTURES
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
+
+extern bool is_loaded;
+extern bool is_running;
+extern bool terminate;
+extern char * elf_path;
+extern pid_t child_pid;
 
 typedef struct breakpoint
 {
@@ -10,15 +17,17 @@ typedef struct breakpoint
 	int srcfile_line_num;
 
 	// first instruction representing the line number to be replaced by 0xCC
-	char instruction;
+	uint8_t bp_data;
 
 	// address in the text of the running program where the insturction is
-	void * instruction_addr;
+	unsigned long bp_addr;
 
 	// true if the breakpoint is active in the source
-	bool is_active;
+	bool is_enabled;
 
-	breakpoint * next;
+	// doubly linked list
+	struct breakpoint * previous;
+	struct breakpoint * next;
 	
 } breakpoint;
 
@@ -26,8 +35,9 @@ typedef struct breakpoint
 breakpoint * alloc_breakpoint(void);
 
 // helper methods for the breakpoint struct
-breakponint * get_breakpoint(uint64_t addr);
-
+breakpoint * get_breakpoint(breakpoint * head, unsigned long pc_addr);
+void enable_breakpoint(breakpoint * bp);
+void disable_breakpoint(breakpoint * bp);
 
 enum REGS
 {
