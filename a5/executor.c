@@ -1,5 +1,7 @@
 #include "executor.h"
 
+#include <string.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -10,7 +12,7 @@ void do_run(const char * prog_name, char ** argv)
 	if ((child_pid = fork()) == 0)
 	{
 		// ptrace traceme
-		if (ptrace(PTRACE_TRACME, 0, 0, 0) < 0)
+		if (ptrace(PTRACE_TRACEME, 0, 0, 0) < 0)
 		{
 			perror("ptrace");
 			exit(1);
@@ -22,6 +24,7 @@ void do_run(const char * prog_name, char ** argv)
 	}
 	else if (child_pid > 0)
 	{
+		int ret_val;
 		waitpid(child_pid, &ret_val, 0);
 		// add all breakpoints here
 	}
@@ -33,18 +36,22 @@ void do_run(const char * prog_name, char ** argv)
 
 }
 
-void do_set_breakpoint(int line_num)
+void do_set_breakpoint(void * addr)
 {
 
 }
 
 void do_continue()
 {
+	// resume child
 	ptrace(PTRACE_CONT, child_pid, NULL, NULL);
 
 	// now wait on the child
-	int ret_val;
-	waitpid(child_pid, &ret_val, 0);
+	int status;
+	waitpid(child_pid, &status, 0);
+
+	// process status
+	process_status(status);
 }
 
 void do_print()
@@ -54,12 +61,31 @@ void do_print()
 
 void do_quit()
 {
-	// kill child then kill self
+	// kill child then terminate
 	kill(child_pid, SIGKILL);
-	is_running = false;
+	exit(0);
 }
 
-void do_load_elf()
+void do_load_elf(char * path)
 {
+	elf_path = calloc(1, sizeof(char) * (strlen(path) + 1));
+	strcpy(elf_path, path);
+}
 
+void process_status(int status)
+{
+	if (WIFEXITED(status))
+	{
+		int ret_val = WEXITSTATUS(status);
+		if (ret_val == 0)
+			printf("Program exited normally.\n");
+		else
+			printf("Program exited with code %d.\n", ret_val);
+
+		is_running = 0;
+	}
+	else if (WIFSIGNALED(status))
+	{
+		printf("Signal %d sent to child.\n", WTERMSIG(status));
+	}
 }

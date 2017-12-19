@@ -20,6 +20,6 @@ typedef struct breakpoint
 	
 } breakpoint;
 
-breakpoint * alloc_breakpoint();
+breakpoint * alloc_breakpoint(void);
 
 #endif
